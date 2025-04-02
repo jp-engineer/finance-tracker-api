@@ -9,7 +9,6 @@ def test_init_db_creates_file_and_table():
     engine = get_engine()
     db_path = engine.url.database
 
-    
     if os.path.exists(db_path):
         os.remove(db_path)
     

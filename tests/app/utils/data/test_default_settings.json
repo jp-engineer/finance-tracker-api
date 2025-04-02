@@ -1,0 +1,13 @@
+{
+    "general": {
+      "country_code": "gb"
+    },
+    "view": {
+      "user_name": "Default",
+      "date_format": "yyyy-mm-dd"
+    },
+    "developer": {
+      "start_date": "2024-01-01"
+    }
+  }
+  
