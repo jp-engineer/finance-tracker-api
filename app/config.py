@@ -4,7 +4,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 API_VERSION = "v1"
-MODE = os.environ.get("DB_MODE", "prod").strip().lower()
+MODE = os.environ.get("MODE", "prod").strip().lower()
 MODE_TO_FILENAME = {
     "prod": "finances.db",
     "dev": "dev-finances.db",

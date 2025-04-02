@@ -2,18 +2,13 @@ import os
 import sys
 import importlib
 import pytest
+from tests.helpers.reload_config import reload_config_module_with_mode
 
 CONFIG_PATH = "app.config"
 
-def reload_config_module_with_mode(mode_value):
-    os.environ["DB_MODE"] = mode_value
-    if CONFIG_PATH in sys.modules:
-        del sys.modules[CONFIG_PATH]
-    return importlib.import_module(CONFIG_PATH)
-
 @pytest.mark.unit
 def test_prod_mode_paths(monkeypatch):
-    monkeypatch.setenv("DB_MODE", "prod")
+    monkeypatch.setenv("MODE", "prod")
     config = reload_config_module_with_mode("prod")
     
     assert config.MODE == "prod"
@@ -23,7 +18,7 @@ def test_prod_mode_paths(monkeypatch):
 
 @pytest.mark.unit
 def test_dev_mode_paths(monkeypatch):
-    monkeypatch.setenv("DB_MODE", "dev")
+    monkeypatch.setenv("MODE", "dev")
     config = reload_config_module_with_mode("dev")
 
     assert config.MODE == "dev"
@@ -33,7 +28,7 @@ def test_dev_mode_paths(monkeypatch):
 
 @pytest.mark.unit
 def test_test_mode_paths(monkeypatch):
-    monkeypatch.setenv("DB_MODE", "test")
+    monkeypatch.setenv("MODE", "test")
     config = reload_config_module_with_mode("test")
 
     assert config.MODE == "test"
@@ -43,7 +38,7 @@ def test_test_mode_paths(monkeypatch):
 
 @pytest.mark.unit
 def test_invalid_mode_exits(monkeypatch):
-    monkeypatch.setenv("DB_MODE", "invalid")
+    monkeypatch.setenv("MODE", "invalid")
 
     with pytest.raises(SystemExit) as exc_info:
         reload_config_module_with_mode("invalid")
