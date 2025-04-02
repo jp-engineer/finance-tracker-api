@@ -1,0 +1,50 @@
+# tests/unit/test_config.py
+import os
+import sys
+import pytest
+import importlib
+
+CONFIG_PATH = "app.config"
+
+def reload_config_module_with_mode(mode_value):
+    os.environ["DB_MODE"] = mode_value
+    if CONFIG_PATH in sys.modules:
+        del sys.modules[CONFIG_PATH]
+    return importlib.import_module(CONFIG_PATH)
+
+def test_prod_mode_paths(monkeypatch):
+    monkeypatch.setenv("DB_MODE", "prod")
+    config = reload_config_module_with_mode("prod")
+    
+    assert config.MODE == "prod"
+    assert config.DB_FILENAME == "finances.db"
+    assert config.DB_PATH == os.path.join("app", "db", "finances.db")
+    assert config.SEED_DIR == os.path.join("app", "db", "seed")
+
+def test_dev_mode_paths(monkeypatch):
+    monkeypatch.setenv("DB_MODE", "dev")
+    config = reload_config_module_with_mode("dev")
+
+    assert config.MODE == "dev"
+    assert config.DB_FILENAME == "dev-finances.db"
+    assert config.DB_PATH == os.path.join("app", "db", "dev-finances.db")
+    assert config.SEED_DIR == os.path.join("app", "db", "seed")
+
+def test_test_mode_paths(monkeypatch):
+    monkeypatch.setenv("DB_MODE", "test")
+    config = reload_config_module_with_mode("test")
+
+    assert config.MODE == "test"
+    assert config.DB_FILENAME == "test-finances.db"
+    assert config.DB_PATH == os.path.join("tests", "app", "db", "test-finances.db")
+    assert config.SEED_DIR == os.path.join("tests", "app", "db", "seed")
+
+def test_invalid_mode_exits(monkeypatch):
+    monkeypatch.setenv("DB_MODE", "invalid")
+
+    with pytest.raises(SystemExit) as exc_info:
+        reload_config_module_with_mode("invalid")
+    
+    assert exc_info.type == SystemExit
+    assert str(exc_info.value) == "1"
+    

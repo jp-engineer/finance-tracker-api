@@ -31,7 +31,7 @@
       "cwd": "${workspaceFolder}",
       "justMyCode": true,
       "env": {
-        "DB_MODE": "dev"
+        "MODE": "dev"
       }
     }
   ]
