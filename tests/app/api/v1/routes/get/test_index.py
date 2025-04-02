@@ -8,18 +8,7 @@ def test_get_index_init_message(client, api_prefix):
     assert response.json() == {"message": "finance-tracker API is running"}
 
 @pytest.mark.api
-def test_get_index_app_config_contains_correct_keys(client, api_prefix):
-    response = client.get(f"{api_prefix}/get-app-config")
-    response_json = response.json()
-
-    assert response.status_code == 200
-    assert "API_VERSION" in response_json
-    assert "MODE" in response_json
-    assert "DB_PATH" in response_json
-    assert "SEED_DIR" in response_json
-
-@pytest.mark.api
-def test_get_index_app_config_contains_valid_values(client, api_prefix):
+def test_get_index_app_cfg_items(client, api_prefix):
     response = client.get(f"{api_prefix}/get-app-config")
     response_json = response.json()
 

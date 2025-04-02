@@ -29,3 +29,4 @@ APP_CFG = {
     "DB_PATH": DB_PATH,
     "SEED_DIR": SEED_DIR,
 }
+logger.info(f"App config initialized: {APP_CFG}")
