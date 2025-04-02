@@ -17,8 +17,12 @@ def get_db_cfg_dict():
     cfg = {
         "DB_PATH": db_path,
         "EXISTS": exists,
-        "HAS_TABLES": has_settings_table
+        "HAS_TABLES": has_settings_table,
+        "TABLES": inspector.get_table_names()
+        # "TABLES_COUNT": len(inspector.get_table_names()),
+        # "HAS_DATA": False,
+        # "SEED_FILE": None
     }
-    logger.info(f"DB config initialized: {cfg}")
+    logger.info(f"DB config: {cfg}")
     
     return cfg

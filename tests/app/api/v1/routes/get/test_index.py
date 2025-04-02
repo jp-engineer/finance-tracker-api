@@ -28,4 +28,5 @@ def test_get_index_db_config(client, api_prefix):
     assert response_json["DB_PATH"] == "tests\\app\\db\\test-finances.db"
     assert response_json["EXISTS"] == True
     assert response_json["HAS_TABLES"] == True
+    assert response_json["TABLES"] == ["settings"]
     
