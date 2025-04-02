@@ -9,7 +9,7 @@ logging.basicConfig(filename='logs/ft-api.log', encoding='utf-8', level=logging.
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
 init_db()
-logger.info("Database initialized")
+logger.info("Database initialized and seeded with settings.")
 
 app = FastAPI(
     title="Finance Tracker API",
