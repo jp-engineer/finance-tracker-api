@@ -1,8 +1,7 @@
-import os
 import pytest
+from app.db.database import init_db
 from app.utils.read_db_cfg import get_db_cfg_dict
 from app.config import APP_CFG
-from app.db.database import init_db
 
 @pytest.mark.unit
 def test_get_db_cfg_before_db_creation(tmp_path, monkeypatch):

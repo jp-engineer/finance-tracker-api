@@ -1,5 +1,4 @@
 import pytest
-from tests.helpers.reload_config import reload_config_module_with_mode
 
 @pytest.mark.api
 def test_get_index_init_message(client, api_prefix):
@@ -29,4 +28,6 @@ def test_get_index_db_config(client, api_prefix):
     assert response_json["EXISTS"] == True
     assert response_json["HAS_TABLES"] == True
     assert response_json["TABLES"] == ["settings"]
+    assert response_json["TABLES_COUNT"] == 1
+    assert response_json["HAS_DATA"] == True
     

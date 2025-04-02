@@ -1,9 +1,9 @@
 import os
 import pytest
-from sqlalchemy import inspect
 from sqlalchemy.orm import Session
-from app.db.database import init_db, get_engine, seed_settings
+from sqlalchemy import inspect
 from app.db.models.setting import Setting
+from app.db.database import init_db, get_engine, seed_settings
 
 def test_init_db_creates_file_and_table():
     engine = get_engine()

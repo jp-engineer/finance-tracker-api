@@ -2,24 +2,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "FastAPI - reset db mode",
-      "type": "debugpy",
-      "request": "launch",
-      "module": "uvicorn",
-      "args": [
-        "main:app",
-        "--reload",
-        "--port",
-        "8000"
-      ],
-      "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}",
-      "justMyCode": true,
-      "env": {
-        "DELETE_DB": "true"
-      }
-    },
-    {
       "name": "FastAPI",
       "type": "debugpy",
       "request": "launch",
@@ -50,6 +32,24 @@
       "justMyCode": true,
       "env": {
         "MODE": "dev"
+      }
+    },
+    {
+      "name": "FastAPI - reset prod db mode",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "main:app",
+        "--reload",
+        "--port",
+        "8000"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true,
+      "env": {
+        "DELETE_DB": "true"
       }
     }
   ]

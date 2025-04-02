@@ -1,7 +1,6 @@
-import os
 from fastapi import APIRouter
-from app.config import APP_CFG
 from app.utils.read_db_cfg import get_db_cfg_dict
+from app.config import APP_CFG
 
 import logging
 logger = logging.getLogger(__name__)

@@ -1,12 +1,12 @@
 import os
 from datetime import date
-from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from app.db.base_class import Base
-from app.config import APP_CFG
-from app.utils.load_settings_from_files import load_merged_settings
+from sqlalchemy import create_engine
 from app.schemas.setting import SettingCreate
 from app.db.models.setting import Setting
+from app.utils.load_settings_from_files import load_merged_settings
+from app.db.base_class import Base
+from app.config import APP_CFG
 
 import logging
 logger = logging.getLogger(__name__)
@@ -14,11 +14,14 @@ logger = logging.getLogger(__name__)
 def get_engine():
     db_url = f"sqlite:///{APP_CFG['DB_PATH']}"
     logger.debug(f"Creating database engine with URL: {db_url}")
-    return create_engine(db_url, echo=False, future=True)
+    engine = create_engine(db_url, echo=False, future=True)
+
+    return engine
 
 def init_db():
     if not os.path.exists(APP_CFG["DB_PATH"]):
-        logger.debug(f"Database file does not exist. Creating: {APP_CFG['DB_PATH']}")
+        logger.debug(f"Database file does not exist. Creating: {APP_CFG['DB_PATH']} and seeding settings table.")
+
         engine = get_engine()
         Base.metadata.create_all(bind=engine)
         seed_settings()
@@ -28,8 +31,8 @@ def seed_settings():
     engine = get_engine()
 
     with Session(engine) as session:
-        for category, kv in settings_data.items():
-            for key, value in kv.items():
+        for category, key_value in settings_data.items():
+            for key, value in key_value.items():
                 if value is None:
                     if key == "start_date":
                         value = date.today().strftime("%Y-%m-%d")

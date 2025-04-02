@@ -1,10 +1,18 @@
 import os
+from sqlalchemy.orm import Session
 from sqlalchemy import inspect
-from app.config import APP_CFG
+from app.db.models.setting import Setting
 from app.db.database import get_engine
+from app.config import APP_CFG
 
 import logging
 logger = logging.getLogger(__name__)
+
+def check_entry_in_settings_table(engine):
+    with Session(engine) as session:
+        count = session.query(Setting).count()
+        logger.debug(f"Settings table entry count: {count}")
+        return count > 0
 
 def get_db_cfg_dict():
     db_path = APP_CFG["DB_PATH"]
@@ -12,15 +20,14 @@ def get_db_cfg_dict():
 
     engine = get_engine()
     inspector = inspect(engine)
-    has_settings_table = "settings" in inspector.get_table_names()
 
     cfg = {
         "DB_PATH": db_path,
         "EXISTS": exists,
-        "HAS_TABLES": has_settings_table,
-        "TABLES": inspector.get_table_names()
-        # "TABLES_COUNT": len(inspector.get_table_names()),
-        # "HAS_DATA": False,
+        "HAS_TABLES": "settings" in inspector.get_table_names(),
+        "TABLES": inspector.get_table_names(),
+        "TABLES_COUNT": len(inspector.get_table_names()),
+        "HAS_DATA": check_entry_in_settings_table(engine)
         # "SEED_FILE": None
     }
     logger.info(f"DB config: {cfg}")
