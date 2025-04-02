@@ -1,4 +1,5 @@
 import os
+from datetime import date
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from app.db.base_class import Base
@@ -30,8 +31,8 @@ def seed_settings():
         for category, kv in settings_data.items():
             for key, value in kv.items():
                 if value is None:
-                    logger.warning(f"Skipping {key} in {category} because value is None")
-                    continue
+                    if key == "start_date":
+                        value = date.today().strftime("%Y-%m-%d")
                 try:
                     validated = SettingCreate(key=key, value=value, category=category)
                     existing = session.query(Setting).filter_by(key=key, category=category).first()
