@@ -1,8 +1,7 @@
-# tests/unit/test_config.py
 import os
 import sys
-import pytest
 import importlib
+import pytest
 
 CONFIG_PATH = "app.config"
 
@@ -12,6 +11,7 @@ def reload_config_module_with_mode(mode_value):
         del sys.modules[CONFIG_PATH]
     return importlib.import_module(CONFIG_PATH)
 
+@pytest.mark.unit
 def test_prod_mode_paths(monkeypatch):
     monkeypatch.setenv("DB_MODE", "prod")
     config = reload_config_module_with_mode("prod")
@@ -21,6 +21,7 @@ def test_prod_mode_paths(monkeypatch):
     assert config.DB_PATH == os.path.join("app", "db", "finances.db")
     assert config.SEED_DIR == os.path.join("app", "db", "seed")
 
+@pytest.mark.unit
 def test_dev_mode_paths(monkeypatch):
     monkeypatch.setenv("DB_MODE", "dev")
     config = reload_config_module_with_mode("dev")
@@ -30,6 +31,7 @@ def test_dev_mode_paths(monkeypatch):
     assert config.DB_PATH == os.path.join("app", "db", "dev-finances.db")
     assert config.SEED_DIR == os.path.join("app", "db", "seed")
 
+@pytest.mark.unit
 def test_test_mode_paths(monkeypatch):
     monkeypatch.setenv("DB_MODE", "test")
     config = reload_config_module_with_mode("test")
@@ -39,6 +41,7 @@ def test_test_mode_paths(monkeypatch):
     assert config.DB_PATH == os.path.join("tests", "app", "db", "test-finances.db")
     assert config.SEED_DIR == os.path.join("tests", "app", "db", "seed")
 
+@pytest.mark.unit
 def test_invalid_mode_exits(monkeypatch):
     monkeypatch.setenv("DB_MODE", "invalid")
 
