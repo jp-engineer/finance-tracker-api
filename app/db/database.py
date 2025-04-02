@@ -1,6 +1,7 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base
+from app.db.models import setting
 from app.config import APP_CFG
 
 import logging
