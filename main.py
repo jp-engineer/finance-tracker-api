@@ -3,7 +3,7 @@ from app.api.v1.routes.get import index as v1_get_index
 import logging
 
 logger = logging.getLogger(__name__)
-logging.basicConfig(filename='ft-api.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='logs/ft-api.log', encoding='utf-8', level=logging.DEBUG)
 
 API_VERSION = "v1"
 
