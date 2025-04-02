@@ -1,7 +1,10 @@
+import os
+from sqlalchemy import inspect
 from app.config import APP_CFG
 from app.db.database import get_engine
-from sqlalchemy import inspect
-import os
+
+import logging
+logger = logging.getLogger(__name__)
 
 def get_db_cfg_dict():
     db_path = APP_CFG["DB_PATH"]
@@ -16,5 +19,6 @@ def get_db_cfg_dict():
         "EXISTS": exists,
         "HAS_TABLES": has_settings_table
     }
+    logger.info(f"DB config initialized: {cfg}")
     
     return cfg

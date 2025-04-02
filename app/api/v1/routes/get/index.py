@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-# --- Status messages ---
+# --- Status Routes ---
 @router.get("/get-init-message")
 def get_index_init_message():
     logger.info("GET /get-init-message")
