@@ -1,6 +1,7 @@
 import os
 from fastapi import APIRouter
 from app.config import APP_CFG
+from app.utils.read_db_cfg import get_db_cfg_dict
 
 import logging
 logger = logging.getLogger(__name__)
@@ -21,9 +22,5 @@ def get_index_app_config():
 @router.get("/get-db-config")
 def get_index_db_config():
     logger.info("GET /get-db-config")
-    db_config = {
-        "DB_PATH": APP_CFG["DB_PATH"],
-        "EXISTS": os.path.exists(APP_CFG["DB_PATH"])
-    }
-    return db_config
-    # add: HAS_TABLES, HAS_SETTINGS, HAS_DATA
+    db_cfg = get_db_cfg_dict()
+    return db_cfg
