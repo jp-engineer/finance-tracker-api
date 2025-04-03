@@ -1,15 +1,16 @@
 from fastapi import FastAPI, APIRouter
 from app.api.v1.routes.get import index as v1_get_index
 from app.db.database import init_db
-from app.utils.setup_app_logging import setup_app_logging
+from app.config import check_for_db_reset
 from app.config import APP_CFG
 
 import logging
-
+from app.utils.setup_app_logging import setup_app_logging
 setup_app_logging()
 logger = logging.getLogger(__name__)
 
-if APP_CFG == "prod":
+check_for_db_reset()
+if APP_CFG['MODE'] == "prod":
     init_db()
     logger.info("Database initialized and seeded with settings.")
 

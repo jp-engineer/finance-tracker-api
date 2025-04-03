@@ -2,7 +2,7 @@ import os
 from sqlalchemy.orm import Session
 from sqlalchemy import inspect
 from app.db.models.setting import Setting
-from app.db.database import get_engine
+from app.db.database import engine_context
 from app.config import APP_CFG
 
 import logging
@@ -18,9 +18,6 @@ def get_db_cfg_dict():
     db_path = APP_CFG["DB_PATH"]
     exists = os.path.exists(db_path)
 
-    engine = get_engine()
-    inspector = inspect(engine)
-
     if not exists:
         logger.warning(f"DB file does not exist at {db_path}.")
         cfg = {
@@ -31,16 +28,23 @@ def get_db_cfg_dict():
             "TABLES_COUNT": 0,
             "HAS_DATA": False
         }
-    else:
+        logger.info(f"DB config: {cfg}")
+        return cfg
+
+    with engine_context() as engine:
+        inspector = inspect(engine)
+        table_names = inspector.get_table_names()
+        has_settings_table = "settings" in table_names
+        has_data = check_entry_in_settings_table(engine) if has_settings_table else False
+
         cfg = {
             "DB_PATH": db_path,
             "EXISTS": exists,
-            "HAS_TABLES": "settings" in inspector.get_table_names(),
-            "TABLES": inspector.get_table_names(),
-            "TABLES_COUNT": len(inspector.get_table_names()),
-            "HAS_DATA": check_entry_in_settings_table(engine)
-            # "SEED_FILE": None
+            "HAS_TABLES": has_settings_table,
+            "TABLES": table_names,
+            "TABLES_COUNT": len(table_names),
+            "HAS_DATA": has_data
         }
+
         logger.info(f"DB config: {cfg}")
-    
-    return cfg
+        return cfg

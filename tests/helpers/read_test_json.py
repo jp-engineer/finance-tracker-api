@@ -1,0 +1,15 @@
+import os
+import json
+from pathlib import Path
+
+def load_test_json(starting_dir: str, filename: str) -> dict:
+    starting_dir = os.path.abspath(starting_dir)
+    json_path = Path(starting_dir) / "data" / filename
+
+    if not json_path.is_file():
+        raise FileNotFoundError(f"File {json_path} does not exist.")
+    
+    with open(json_path, 'r', encoding='utf-8') as f:
+        data = json.load(f)
+
+    return data

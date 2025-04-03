@@ -1,5 +1,4 @@
 import os
-import gc
 import pytest
 from fastapi.testclient import TestClient
 from main import app
@@ -29,6 +28,5 @@ def setup_test_db_with_settings():
         init_db(engine=engine)
         yield engine
 
-        gc.collect()
         engine.dispose()
         os.remove(db_path)

@@ -1,6 +1,7 @@
 import pytest
 
 @pytest.mark.api
+@pytest.mark.api_index
 class TestAPIIndex:
     @pytest.fixture(autouse=True, scope="class")
     def _init_db(self, setup_test_db_with_settings):
@@ -35,6 +36,7 @@ class TestAPIIndex:
         assert response_json["HAS_DATA"] == True
 
 @pytest.mark.api
+@pytest.mark.api_index
 def test_get_index_db_config_with_no_db(client, api_prefix):
     response = client.get(f"{api_prefix}/get-db-config")
     response_json = response.json()

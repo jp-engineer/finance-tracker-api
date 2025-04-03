@@ -5,8 +5,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from app.schemas.setting import SettingCreate
 from app.db.models.setting import Setting
-from app.utils.load_settings_from_files import load_merged_settings
 from app.db.models.base_class import Base
+from app.utils.load_settings_from_files import load_merged_settings
 from app.config import APP_CFG
 
 import logging
@@ -47,7 +47,8 @@ def seed_settings(engine=None):
         engine = get_engine()
 
     with Session(engine) as session:
-        for category, key_value in load_merged_settings().items():
+        settings_data = load_merged_settings()
+        for category, key_value in settings_data.items():
             for key, value in key_value.items():
                 if value is None and key == "start_date":
                     value = date.today().strftime("%Y-%m-%d")
