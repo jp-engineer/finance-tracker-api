@@ -1,13 +1,16 @@
 {
-    "general": {
-      "country_code": "gb"
-    },
-    "view": {
-      "user_name": "Default",
-      "date_format": "yyyy-mm-dd"
-    },
-    "developer": {
-      "start_date": "2024-01-01"
-    }
+  "general": {
+    "country_code": "gb"
+  },
+  "view": {
+    "user_name": "pal",
+    "week_starts_on": "monday",
+    "date_format": "yyyy-mm-dd",
+    "default_currency": "gbp",
+    "default_currency_symbol": "£"
+  },
+  "developer": {
+    "start_date": null
   }
+}
   

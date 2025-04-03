@@ -1,6 +1,6 @@
 ---
 general:
-  country_code: US # Must be 2-letter ISO code
+  country_code: null # Must be 2-letter ISO code
 
 view:
   user_name: null # Name of the user
