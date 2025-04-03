@@ -2,7 +2,7 @@ import os
 import yaml
 import pytest
 from app.utils.load_settings_from_files import load_merged_settings
-from tests.helpers.read_test_json import load_test_json
+from tests.helpers.read_test_data import load_test_json
 
 CWD_DIR = os.path.dirname(os.path.abspath(__file__))
 
