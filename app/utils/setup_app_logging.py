@@ -27,3 +27,5 @@ def setup_app_logging(log_dir="logs", log_file="ft-api.log", max_bytes=1_000_000
     logger.addHandler(console_handler)
 
     logger.debug("Logging has been configured.")
+
+setup_app_logging()
