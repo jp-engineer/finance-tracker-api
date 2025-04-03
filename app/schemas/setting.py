@@ -1,5 +1,5 @@
-import pycountry
 from pydantic import BaseModel, model_validator
+import pycountry
 from app.schemas.enums import SettingCategoryEnum
 
 DATE_FORMATS = {"dd-mm-yyyy", "mm-dd-yyyy", "yyyy-mm-dd"}

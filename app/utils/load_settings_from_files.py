@@ -1,8 +1,8 @@
 import yaml
 from pydantic import ValidationError
-from app.utils.setup_templated_files import setup_templates
 from app.schemas.setting import SettingBase
 from app.schemas.enums import SettingCategoryEnum
+from app.utils.setup_templated_files import setup_templates
 
 import logging
 logger = logging.getLogger(__name__)
@@ -23,11 +23,10 @@ def load_merged_settings(user_settings_path: str ="app/user/user-settings.yml",
                          default_settings_path: str ="app/defaults/default-settings.yml",
                          load_templates: bool = False,
                          templates_dir: str ="app/templates"):
-
     def read_yaml(path):
         try:
-            with open(path, "r") as f:
-                return yaml.safe_load(f)
+            data = yaml.safe_load(open(path, "r"))
+            return data
         except FileNotFoundError:
             logger.error(f"File {path} not found. Returning empty dictionary.")
             return {}

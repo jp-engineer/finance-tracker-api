@@ -1,7 +1,19 @@
 import pytest
-from app.db.database import init_db
+from app.db.database import init_db, engine_context
 from app.utils.read_db_cfg import get_db_cfg_dict
 from app.config import APP_CFG
+from app.utils.read_db_cfg import check_entry_in_settings_table
+
+@pytest.mark.unit
+def test_check_entry_returns_false_for_empty_table(tmp_path, monkeypatch):
+    db_path = tmp_path / "no_data.db"
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))
+
+    init_db()
+
+    with engine_context() as engine:
+        result = check_entry_in_settings_table(engine)
+        assert result is False
 
 @pytest.mark.unit
 def test_get_db_cfg_before_db_creation(tmp_path, monkeypatch):

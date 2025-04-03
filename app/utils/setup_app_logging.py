@@ -9,9 +9,7 @@ def setup_app_logging(log_dir="logs", log_file="ft-api.log", max_bytes=1_000_000
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    formatter = logging.Formatter(
-        fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    )
+    formatter = logging.Formatter(fmt='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     file_handler = RotatingFileHandler(
         log_path,

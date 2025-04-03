@@ -3,9 +3,10 @@ import app.utils.setup_app_logging
 logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI, APIRouter
+from app.config import APP_CFG
+from app.config import check_for_db_reset
 from app.api.v1.routes.get import index as v1_get_index
 from app.db.database import init_db, seed_settings
-from app.config import check_for_db_reset, APP_CFG
 from app.utils.setup_templated_files import setup_templates
 
 TEMPLATES_DIR = "app/templates/"
@@ -14,7 +15,7 @@ USER_SETTINGS_PATH = "app/user/user-settings.yml"
 check_for_db_reset()
 
 if APP_CFG['MODE'] == "prod":
-    setup_templates(TEMPLATES_DIR, USER_SETTINGS_PATH, True)
+    setup_templates(TEMPLATES_DIR, USER_SETTINGS_PATH)
     logger.info(f"Templates setup completed. User settings path: {USER_SETTINGS_PATH}")
     init_db()
     logger.info("Database initialized.")

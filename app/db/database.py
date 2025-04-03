@@ -1,13 +1,13 @@
 import os
 from datetime import date
 from contextlib import contextmanager
-from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
-from app.schemas.setting import SettingCreate
-from app.db.models.setting import Setting
-from app.db.models.base_class import Base
-from app.utils.load_settings_from_files import load_merged_settings
+from sqlalchemy.orm import Session
 from app.config import APP_CFG
+from app.db.models.base_class import Base
+from app.db.models.setting import Setting
+from app.schemas.setting import SettingCreate
+from app.utils.load_settings_from_files import load_merged_settings
 
 import logging
 logger = logging.getLogger(__name__)

@@ -8,6 +8,16 @@ from app.db.database import init_db, seed_settings, engine_context
 from app.config import APP_CFG
 
 @pytest.mark.unit
+def test_engine_context_creates_and_disposes_engine():
+    with engine_context() as engine:
+        assert engine is not None
+        assert engine.name == "sqlite"
+        assert engine.driver == "pysqlite"
+
+    with pytest.raises(Exception):
+        engine.execute("SELECT 1")
+
+@pytest.mark.unit
 def test_init_db_creates_file_and_table():
     with engine_context() as engine:
         db_path = APP_CFG['DB_PATH']

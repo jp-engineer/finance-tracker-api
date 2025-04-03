@@ -1,9 +1,9 @@
 import os
 import pytest
 from fastapi.testclient import TestClient
+from app.config import APP_CFG
 from main import app
 from app.db.database import engine_context, init_db, seed_settings
-from app.config import APP_CFG
 
 @pytest.fixture
 def client():

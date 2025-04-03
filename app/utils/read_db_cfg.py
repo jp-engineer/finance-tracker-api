@@ -1,9 +1,9 @@
 import os
-from sqlalchemy.orm import Session
 from sqlalchemy import inspect
+from sqlalchemy.orm import Session
+from app.config import APP_CFG
 from app.db.models.setting import Setting
 from app.db.database import engine_context
-from app.config import APP_CFG
 
 import logging
 logger = logging.getLogger(__name__)
