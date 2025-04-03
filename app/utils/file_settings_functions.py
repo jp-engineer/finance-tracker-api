@@ -59,3 +59,12 @@ def load_merged_settings(user_settings_path: str ="app/user/user-settings.yml",
 
     logging.debug(f"Merged and validated settings: {merged}")
     return merged
+
+def update_all_user_settings(user_settings_path: str ="app/user/user-settings.yml", settings: dict = None) -> dict:
+    for category, keys in settings.items():
+        for key, value in keys.items():
+            if not validate_setting(category, key, value):
+                raise ValueError(f"Invalid setting: {category}.{key} = {value}")
+
+    with open(user_settings_path,  "w", encoding='utf-8') as file:
+        yaml.dump(settings, file, default_flow_style=False, allow_unicode=True)

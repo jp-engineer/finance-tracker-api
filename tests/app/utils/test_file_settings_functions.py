@@ -1,7 +1,7 @@
 import os
 import yaml
 import pytest
-from app.utils.load_settings_from_files import load_merged_settings
+from app.utils.file_settings_functions import load_merged_settings, update_all_user_settings
 from tests.helpers.read_test_data import load_test_json
 
 CWD_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -57,3 +57,29 @@ def test_invalid_country_code_falls_back_to_default(tmp_path, caplog):
 
     assert merged["general"]["country_code"] == default_settings["general"]["country_code"]
     assert "Invalid setting [general.country_code]" in caplog.text
+
+@pytest.mark.unit
+def test_update_all_user_settings_writes_valid_file(tmp_path):
+    settings = load_test_json(CWD_DIR, "user_settings")
+    user_path = tmp_path / "user-settings.yml"
+
+    result = update_all_user_settings(str(user_path), settings)
+
+    assert user_path.exists()
+
+    with open(user_path, "r", encoding="utf-8") as f:
+        written = yaml.safe_load(f)
+
+    assert written["general"] == settings["general"]
+    assert written["view"] == settings["view"]
+    assert written["developer"] == settings["developer"]
+
+@pytest.mark.unit
+def test_update_all_user_settings_invalid_raises(tmp_path):
+    invalid_settings = load_test_json(CWD_DIR, "user_settings_invalid")
+    user_path = tmp_path / "user-settings.yml"
+
+    with pytest.raises(ValueError) as e:
+        update_all_user_settings(str(user_path), invalid_settings)
+
+    assert "Invalid setting" in str(e.value)

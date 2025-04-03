@@ -7,7 +7,7 @@ from app.config import APP_CFG
 from app.db.models.base_class import Base
 from app.db.models.setting import Setting
 from app.schemas.setting import SettingCreate
-from app.utils.load_settings_from_files import load_merged_settings
+from app.utils.file_settings_functions import load_merged_settings
 
 import logging
 logger = logging.getLogger(__name__)
