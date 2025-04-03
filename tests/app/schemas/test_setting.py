@@ -10,26 +10,32 @@ CWD_DIR = os.path.dirname(os.path.abspath(__file__))
 @pytest.mark.unit
 def test_valid_setting_create_schema():
     valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
+    valid_key = valid_setting_data.get("key")
+    valid_value = valid_setting_data.get("value")
+    valid_category = valid_setting_data.get("category")
+
     setting = SettingCreate(**valid_setting_data)
-    assert setting.key == "country_code"
-    assert setting.value == "GB"
-    assert setting.category == SettingCategoryEnum.general
+    
+    assert setting.key == valid_key
+    assert setting.value == valid_value
+    assert setting.category == valid_category
 
 @pytest.mark.unit
 def test_invalid_setting_category():
-    data = {
-        "key": "auto_save",
-        "value": "true",
-        "category": "invalid"
-    }
+    valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
+
+    valid_key = valid_setting_data.get("key")
+    valid_value = valid_setting_data.get("value")
+    invalid_category = "invalid_category"
+    data = {"key": valid_key, "value": valid_value, "category": invalid_category}
+
     with pytest.raises(ValidationError):
         SettingCreate(**data)
 
 @pytest.mark.unit
 def test_missing_field_in_setting():
-    data = {
-        "value": "en",
-        "category": "general"
-    }
+    valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
+    del valid_setting_data["key"]
+
     with pytest.raises(ValidationError):
-        SettingCreate(**data)
+        SettingCreate(**valid_setting_data)
