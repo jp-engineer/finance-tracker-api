@@ -22,7 +22,7 @@ def engine_context():
 
 def get_engine():
     db_url = f"sqlite:///{APP_CFG['DB_PATH']}"
-    logger.debug(f"Creating database engine with URL: {db_url}")
+    logger.debug(f"Creating database engine for URL: {db_url}")
     engine = create_engine(db_url, echo=False, future=True)
 
     return engine
