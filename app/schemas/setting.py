@@ -39,8 +39,6 @@ class SettingCreate(SettingBase):
     pass
 
 class SettingRead(SettingBase):
-    id: int
-
     model_config = {
         "from_attributes": True
     }

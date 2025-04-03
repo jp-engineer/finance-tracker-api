@@ -38,5 +38,5 @@ class TestAPIIndex:
         response = client.get(f"{api_prefix}{ROUTE}/get-setting-by-category-and-key/general/invalid_key")
         response_dict = response.json()
 
-        assert response.status_code == 200
-        assert response_dict["error"] == "Setting not found"
+        assert response.status_code == 404
+        assert response_dict["detail"] == "Setting not found"
