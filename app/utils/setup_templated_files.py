@@ -1,5 +1,4 @@
 import os
-import yaml
 from app.utils.load_settings_from_files import USER_SETTINGS_PATH
 
 import logging
