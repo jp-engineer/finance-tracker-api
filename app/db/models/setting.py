@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Enum
 from app.schemas.enums import SettingCategoryEnum
-from app.db.base_class import Base
+from app.db.models.base_class import Base
 
 class Setting(Base):
     __tablename__ = "settings"

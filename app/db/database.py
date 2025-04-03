@@ -1,15 +1,24 @@
 import os
 from datetime import date
+from contextlib import contextmanager
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine
 from app.schemas.setting import SettingCreate
 from app.db.models.setting import Setting
 from app.utils.load_settings_from_files import load_merged_settings
-from app.db.base_class import Base
+from app.db.models.base_class import Base
 from app.config import APP_CFG
 
 import logging
 logger = logging.getLogger(__name__)
+
+@contextmanager
+def engine_context():
+    engine = get_engine()
+    try:
+        yield engine
+    finally:
+        engine.dispose()
 
 def get_engine():
     db_url = f"sqlite:///{APP_CFG['DB_PATH']}"
@@ -18,24 +27,30 @@ def get_engine():
 
     return engine
 
-def init_db():
+def init_db(engine=None):
+    if engine is None:
+        engine = get_engine()
+        dispose_after = True
+    else:
+        dispose_after = False
+
     if not os.path.exists(APP_CFG["DB_PATH"]):
         logger.debug(f"Database file does not exist. Creating: {APP_CFG['DB_PATH']} and seeding settings table.")
-
-        engine = get_engine()
         Base.metadata.create_all(bind=engine)
-        seed_settings()
+        seed_settings(engine)
 
-def seed_settings():
-    settings_data = load_merged_settings()
-    engine = get_engine()
+    if dispose_after:
+        engine.dispose()
+
+def seed_settings(engine=None):
+    if engine is None:
+        engine = get_engine()
 
     with Session(engine) as session:
-        for category, key_value in settings_data.items():
+        for category, key_value in load_merged_settings().items():
             for key, value in key_value.items():
-                if value is None:
-                    if key == "start_date":
-                        value = date.today().strftime("%Y-%m-%d")
+                if value is None and key == "start_date":
+                    value = date.today().strftime("%Y-%m-%d")
                 try:
                     validated = SettingCreate(key=key, value=value, category=category)
                     existing = session.query(Setting).filter_by(key=key, category=category).first()
@@ -45,5 +60,4 @@ def seed_settings():
                         logger.info(f"Inserted: {key} in category {category}")
                 except Exception as e:
                     logger.error(f"Validation failed for {category}.{key}: {value} | {e}")
-    
         session.commit()

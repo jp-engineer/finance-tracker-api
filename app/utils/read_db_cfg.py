@@ -21,15 +21,26 @@ def get_db_cfg_dict():
     engine = get_engine()
     inspector = inspect(engine)
 
-    cfg = {
-        "DB_PATH": db_path,
-        "EXISTS": exists,
-        "HAS_TABLES": "settings" in inspector.get_table_names(),
-        "TABLES": inspector.get_table_names(),
-        "TABLES_COUNT": len(inspector.get_table_names()),
-        "HAS_DATA": check_entry_in_settings_table(engine)
-        # "SEED_FILE": None
-    }
-    logger.info(f"DB config: {cfg}")
+    if not exists:
+        logger.warning(f"DB file does not exist at {db_path}.")
+        cfg = {
+            "DB_PATH": db_path,
+            "EXISTS": exists,
+            "HAS_TABLES": False,
+            "TABLES": [],
+            "TABLES_COUNT": 0,
+            "HAS_DATA": False
+        }
+    else:
+        cfg = {
+            "DB_PATH": db_path,
+            "EXISTS": exists,
+            "HAS_TABLES": "settings" in inspector.get_table_names(),
+            "TABLES": inspector.get_table_names(),
+            "TABLES_COUNT": len(inspector.get_table_names()),
+            "HAS_DATA": check_entry_in_settings_table(engine)
+            # "SEED_FILE": None
+        }
+        logger.info(f"DB config: {cfg}")
     
     return cfg
