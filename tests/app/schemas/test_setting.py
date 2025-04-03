@@ -1,7 +1,6 @@
 import os
 import pytest
 from app.schemas.setting import SettingCreate
-from app.schemas.enums import SettingCategoryEnum
 from pydantic import ValidationError
 from tests.helpers.read_test_data import load_test_json
 
