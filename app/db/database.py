@@ -35,9 +35,8 @@ def init_db(engine=None):
         dispose_after = False
 
     if not os.path.exists(APP_CFG["DB_PATH"]):
-        logger.debug(f"Database file does not exist. Creating: {APP_CFG['DB_PATH']} and seeding settings table.")
+        logger.debug(f"Database file does not exist. Creating: {APP_CFG['DB_PATH']}.")
         Base.metadata.create_all(bind=engine)
-        seed_settings(engine)
 
     if dispose_after:
         engine.dispose()

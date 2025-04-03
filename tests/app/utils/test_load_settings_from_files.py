@@ -16,8 +16,8 @@ def set_temp_settings_files(tmp_path, monkeypatch):
     user_path.write_text(yaml.dump(user_settings))
     default_path.write_text(yaml.dump(default_settings))
 
-    monkeypatch.setattr("app.utils.load_settings_from_files.DEFAULTS_PATH", user_path)
-    monkeypatch.setattr("app.utils.load_settings_from_files.FALLBACKS_PATH", default_path)
+    monkeypatch.setattr("app.utils.load_settings_from_files.USER_SETTINGS_PATH", user_path)
+    monkeypatch.setattr("app.utils.load_settings_from_files.DEFAULT_SETTINGS_PATH", default_path)
 
 @pytest.mark.unit
 def test_load_merged_settings(set_temp_settings_files):

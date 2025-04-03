@@ -5,16 +5,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 SETTINGS_DIR = Path("app/user")
-DEFAULTS_PATH = SETTINGS_DIR / "user-settings.yml"
-FALLBACKS_PATH = Path("app/defaults/default-settings.yml")
+USER_SETTINGS_PATH = SETTINGS_DIR / "user-settings.yml"
+DEFAULT_SETTINGS_PATH = Path("app/defaults/default-settings.yml")
 
 def load_merged_settings():
     def read_yaml(path):
         with open(path, "r") as f:
             return yaml.safe_load(f)
 
-    user = read_yaml(DEFAULTS_PATH)
-    default = read_yaml(FALLBACKS_PATH)
+    user = read_yaml(USER_SETTINGS_PATH)
+    default = read_yaml(DEFAULT_SETTINGS_PATH)
     merged = {}
 
     for category, keys in default.items():

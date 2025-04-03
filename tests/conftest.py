@@ -2,7 +2,7 @@ import os
 import pytest
 from fastapi.testclient import TestClient
 from main import app
-from app.db.database import engine_context, init_db
+from app.db.database import engine_context, init_db, seed_settings
 from app.config import APP_CFG
 
 @pytest.fixture
@@ -26,6 +26,7 @@ def setup_test_db_with_settings():
 
     with engine_context() as engine:
         init_db(engine=engine)
+        seed_settings(engine=engine)
         yield engine
 
         engine.dispose()
