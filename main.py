@@ -6,6 +6,7 @@ from fastapi import FastAPI, APIRouter
 from app.config import APP_CFG
 from app.config import check_for_db_reset
 from app.api.v1.routes.get import index as v1_get_index
+from app.api.v1.routes.get import settings as v1_get_settings
 from app.db.database import init_db, seed_settings
 from app.utils.setup_templated_files import setup_templates
 
@@ -33,6 +34,7 @@ app = FastAPI(
 
 api_v1 = APIRouter(prefix=f"/api/{APP_CFG['API_VERSION']}")
 api_v1.include_router(v1_get_index.router)
+api_v1.include_router(v1_get_settings.router)
 
 logger.info(f"API {APP_CFG['API_VERSION']} initialized with prefix: /api/{APP_CFG['API_VERSION']}")
 for route in api_v1.routes:
