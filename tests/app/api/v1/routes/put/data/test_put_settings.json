@@ -1,0 +1,16 @@
+{
+    "general": {
+      "country_code": "us"
+    },
+    "view": {
+      "user_name": "tester",
+      "week_starts_on": "tuesday",
+      "date_format": "yyyy-mm-dd",
+      "default_currency": "usd",
+      "default_currency_symbol": "$"
+    },
+    "developer": {
+      "start_date": null
+    }
+  }
+    
