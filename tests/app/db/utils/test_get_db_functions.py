@@ -1,5 +1,6 @@
+from datetime import date
 import pytest
-from app.db.utils.get_db_functions import get_all_settings_from_db
+from app.db.utils.get_db_functions import get_all_settings_from_db, get_setting_from_db
 
 @pytest.mark.unit
 @pytest.mark.db
@@ -25,3 +26,31 @@ class TestGetDBFunctions:
         assert "default_currency_symbol" in settings["view"]
 
         assert "start_date" in settings["developer"]
+
+    def test_get_setting_from_db(self):
+        setting = get_setting_from_db("general", "country_code")
+        today = date.today().strftime("%Y-%m-%d")
+
+        assert isinstance(setting, dict)
+        assert setting["key"] == "country_code"
+        assert setting["category"] == "general"
+        assert setting["value"] == "gb"
+
+        setting = get_setting_from_db("view", "user_name")
+        assert setting is not None
+        assert setting["key"] == "user_name"
+        assert setting["category"] == "view"
+        assert setting["value"] == "pal"
+
+        setting = get_setting_from_db("developer", "start_date")
+        assert setting is not None
+        assert setting["key"] == "start_date"
+        assert setting["category"] == "developer"
+        assert setting["value"] == today
+
+    def test_get_setting_from_db_invalid(self):
+        setting = get_setting_from_db("general", "invalid_key")
+        assert setting is None
+
+        setting = get_setting_from_db("invalid_category", "country_code")
+        assert setting is None

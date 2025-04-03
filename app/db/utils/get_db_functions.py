@@ -21,3 +21,16 @@ def get_all_settings_from_db() -> dict:
 
     engine.dispose()
     return settings_dict_by_category
+
+def get_setting_from_db(category: str, key: str) -> dict:
+    all_settings = get_all_settings_from_db()
+    if category not in all_settings:
+        return None
+    if key not in all_settings[category]:
+        return None
+    results = {
+        "key": key,
+        "category": category,
+        "value": all_settings[category][key]
+    }
+    return results

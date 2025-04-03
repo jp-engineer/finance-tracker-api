@@ -27,3 +27,12 @@ class TestAPIIndex:
         
         assert "developer" in response_json
         assert "start_date" in response_json["developer"]
+
+    def test_get_setting_by_category_and_key(self, client, api_prefix):
+        response = client.get(f"{api_prefix}{route_prefix}/get-setting-by-category-and-key/general/country_code")
+        response_json = response.json()
+
+        assert response.status_code == 200
+        assert response_json["key"] == "country_code"
+        assert response_json["category"] == "general"
+        assert response_json["value"] == "gb"
