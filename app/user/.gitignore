@@ -1,3 +1,5 @@
 *.yml
 *.yaml
 *.json
+
+*.bak
