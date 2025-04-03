@@ -1,6 +1,4 @@
-from collections import defaultdict
 from sqlalchemy.orm import Session
-from sqlalchemy import select
 from app.db.database import get_engine
 from app.db.models.setting import Setting
 
