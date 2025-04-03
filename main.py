@@ -22,7 +22,6 @@ if APP_CFG['MODE'] == "prod":
     seed_settings()
     logger.info("Database seeded with settings.")
     
-
 app = FastAPI(
     title="Finance Tracker API",
     version=APP_CFG["API_VERSION"]
