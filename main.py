@@ -8,14 +8,19 @@ from app.db.database import init_db, seed_settings
 from app.config import check_for_db_reset, APP_CFG
 from app.utils.setup_templated_files import setup_templates
 
-setup_templates()
+TEMPLATES_DIR = "app/templates/"
+USER_SETTINGS_PATH = "app/user/user-settings.yml"
+
 check_for_db_reset()
 
 if APP_CFG['MODE'] == "prod":
+    setup_templates(TEMPLATES_DIR, USER_SETTINGS_PATH)
+    logger.info(f"Templates setup completed. User settings path: {USER_SETTINGS_PATH}")
     init_db()
     logger.info("Database initialized.")
     seed_settings()
     logger.info("Database seeded with settings.")
+    
 
 app = FastAPI(
     title="Finance Tracker API",
