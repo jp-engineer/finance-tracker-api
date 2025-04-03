@@ -25,7 +25,7 @@ def load_merged_settings(user_settings_path: str ="app/user/user-settings.yml",
                          templates_dir: str ="app/templates"):
     def read_yaml(path):
         try:
-            data = yaml.safe_load(open(path, "r"))
+            data = yaml.safe_load(open(path,  "r", encoding='utf-8'))
             return data
         except FileNotFoundError:
             logger.error(f"File {path} not found. Returning empty dictionary.")
