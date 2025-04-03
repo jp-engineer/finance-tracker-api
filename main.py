@@ -12,15 +12,19 @@ from app.utils.setup_templated_files import setup_templates
 TEMPLATES_DIR = "app/templates/"
 USER_SETTINGS_PATH = "app/user/user-settings.yml"
 
-check_for_db_reset()
-
-if APP_CFG['MODE'] == "prod":
+def setup_prod_db():
     setup_templates(TEMPLATES_DIR, USER_SETTINGS_PATH)
     logger.info(f"Templates setup completed. User settings path: {USER_SETTINGS_PATH}")
+
     init_db()
     logger.info("Database initialized.")
+
     seed_settings()
-    logger.info("Database seeded with settings.")
+    logger.info(f"Database seeded at {APP_CFG['DB_PATH']} with settings.")
+
+check_for_db_reset()
+if APP_CFG['MODE'] == "prod":
+    setup_prod_db()
     
 app = FastAPI(
     title="Finance Tracker API",
