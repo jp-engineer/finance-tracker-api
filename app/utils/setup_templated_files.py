@@ -15,6 +15,7 @@ def setup_templates():
                 logger.error(f"Template file {template_settings_path} does not exist.")
                 raise FileNotFoundError(f"Template file {template_settings_path} does not exist.")
             
+            logger.info(f"user-settings.yml does not exist. Copying template settings from {template_settings_path} to {USER_SETTINGS_PATH}")
             with open(template_settings_path, 'r') as template_file:
                 template_content = template_file.read()
             with open(USER_SETTINGS_PATH, 'w') as user_settings_file:
