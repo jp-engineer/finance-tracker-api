@@ -1,10 +1,11 @@
 import pytest
 from app.db.database import init_db, engine_context
-from app.utils.read_db_cfg import get_db_cfg_dict
+from app.utils.read_app_db_cfg import get_db_cfg_dict
 from app.config import APP_CFG
-from app.utils.read_db_cfg import check_entry_in_settings_table
+from app.utils.read_app_db_cfg import check_entry_in_settings_table
 
 @pytest.mark.unit
+@pytest.mark.db
 def test_check_entry_returns_false_for_empty_table(tmp_path, monkeypatch):
     db_path = tmp_path / "no_data.db"
     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))
@@ -16,6 +17,7 @@ def test_check_entry_returns_false_for_empty_table(tmp_path, monkeypatch):
         assert result is False
 
 @pytest.mark.unit
+@pytest.mark.db
 def test_get_db_cfg_before_db_creation(tmp_path, monkeypatch):
     fake_db_path = tmp_path / "fake.db"
     monkeypatch.setitem(APP_CFG, "DB_PATH", str(fake_db_path))
@@ -27,6 +29,7 @@ def test_get_db_cfg_before_db_creation(tmp_path, monkeypatch):
     assert cfg["TABLES"] == []
 
 @pytest.mark.unit
+@pytest.mark.db
 def test_get_db_cfg_after_db_creation(tmp_path, monkeypatch):
     db_path = tmp_path / "test.db"
     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))

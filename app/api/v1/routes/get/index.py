@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.utils.read_db_cfg import get_db_cfg_dict
+from app.utils.read_app_db_cfg import get_db_cfg_dict
 from app.config import APP_CFG
 
 import logging
