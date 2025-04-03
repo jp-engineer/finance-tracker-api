@@ -46,6 +46,7 @@ def missing_template_env(tmp_path):
     return temp_user_settings_path, str(empty_templates_dir)
 
 @pytest.mark.unit
+@pytest.mark.templates
 def test_setup_templates_creates_user_settings(temp_template_env):
     temp_user_settings_path, templates_dir, expected_content = temp_template_env
 
@@ -58,6 +59,7 @@ def test_setup_templates_creates_user_settings(temp_template_env):
     assert content == expected_content
 
 @pytest.mark.unit
+@pytest.mark.templates
 def test_setup_templates_raises_error_if_template_missing(missing_template_env):
     temp_user_settings_path, templates_dir = missing_template_env
 

@@ -7,6 +7,7 @@ from tests.helpers.read_test_data import load_test_json
 CWD_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @pytest.mark.unit
+@pytest.mark.schema
 def test_valid_setting_create_schema():
     valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
     valid_key = valid_setting_data.get("key")
@@ -20,6 +21,7 @@ def test_valid_setting_create_schema():
     assert setting.category == valid_category
 
 @pytest.mark.unit
+@pytest.mark.schema
 def test_invalid_setting_category():
     valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
 
@@ -32,6 +34,7 @@ def test_invalid_setting_category():
         SettingCreate(**data)
 
 @pytest.mark.unit
+@pytest.mark.schema
 def test_missing_field_in_setting():
     valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
     del valid_setting_data["key"]
