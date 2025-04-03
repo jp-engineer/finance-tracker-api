@@ -12,17 +12,17 @@ def backup_prod_user_settings():
     prod_path = Path("app/user/user-settings.yml")
     backup_path = Path("app/user/user-settings.yml.bak")
 
-    if prod_path.exists():
+    if os.path.exists(prod_path):
         prod_path.rename(backup_path)
         yield
         backup_path.rename(prod_path)
     else:
         yield
-        if backup_path.exists():
-            backup_path.unlink()
+        if os.path.exists(backup_path):
+            os.remove(backup_path)
 
 @pytest.fixture
-def temp_template_env(tmp_path, monkeypatch):
+def temp_template_env(tmp_path):
     template_settings_dict = load_test_yaml(CWD_DIR, "template-user-settings")
     template_settings_str = yaml.dump(template_settings_dict)
 
@@ -34,42 +34,36 @@ def temp_template_env(tmp_path, monkeypatch):
 
     temp_user_settings_path = tmp_path / "user-settings.yml"
 
-    monkeypatch.setattr("app.utils.setup_templated_files.USER_SETTINGS_PATH", temp_user_settings_path)
-    monkeypatch.setattr("app.utils.setup_templated_files.TEMPLATES_DIR", str(temp_templates_dir))
-
-    return temp_user_settings_path, template_settings_str.strip()
+    return temp_user_settings_path, str(temp_templates_dir), template_settings_str.strip()
 
 @pytest.fixture
-def missing_template_env(tmp_path, monkeypatch):
+def missing_template_env(tmp_path):
     empty_templates_dir = tmp_path / "templates"
     empty_templates_dir.mkdir()
 
     temp_user_settings_path = tmp_path / "user-settings.yml"
 
-    monkeypatch.setattr("app.utils.setup_templated_files.USER_SETTINGS_PATH", temp_user_settings_path)
-    monkeypatch.setattr("app.utils.setup_templated_files.TEMPLATES_DIR", str(empty_templates_dir))
-
-    return empty_templates_dir, temp_user_settings_path
+    return temp_user_settings_path, str(empty_templates_dir)
 
 @pytest.mark.unit
 def test_setup_templates_creates_user_settings(temp_template_env):
-    temp_user_settings_path, expected_content = temp_template_env
+    temp_user_settings_path, templates_dir, expected_content = temp_template_env
 
     assert not temp_user_settings_path.exists()
 
-    setup_templates()
+    setup_templates(str(temp_user_settings_path), templates_dir)
 
     assert temp_user_settings_path.exists()
     content = temp_user_settings_path.read_text().strip()
     assert content == expected_content
 
 @pytest.mark.unit
-def test_setup_templates_raises_if_template_missing(missing_template_env):
-    _, temp_user_settings_path = missing_template_env
+def test_setup_templates_raises_error_if_template_missing(missing_template_env):
+    temp_user_settings_path, templates_dir = missing_template_env
 
     assert not temp_user_settings_path.exists()
 
     with pytest.raises(FileNotFoundError) as exc_info:
-        setup_templates()
+        setup_templates(str(temp_user_settings_path), templates_dir)
 
     assert "Template file" in str(exc_info.value)
