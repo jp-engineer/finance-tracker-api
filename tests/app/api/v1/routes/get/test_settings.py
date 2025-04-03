@@ -25,7 +25,6 @@ class TestAPIIndex:
         assert response_dict["developer"] == settings_data["developer"]
         assert response_dict["view"] == settings_data["view"]
 
-
     def test_get_setting_by_category_and_key(self, client, api_prefix):
         response = client.get(f"{api_prefix}{ROUTE}/get-setting-by-category-and-key/general/country_code")
         response_dict = response.json()
@@ -34,3 +33,10 @@ class TestAPIIndex:
         assert response_dict["key"] == "country_code"
         assert response_dict["category"] == "general"
         assert response_dict["value"] == "gb"
+
+    def test_get_setting_by_category_and_key_invalid(self, client, api_prefix):
+        response = client.get(f"{api_prefix}{ROUTE}/get-setting-by-category-and-key/general/invalid_key")
+        response_dict = response.json()
+
+        assert response.status_code == 200
+        assert response_dict["error"] == "Setting not found"

@@ -17,6 +17,6 @@ def get_all_settings():
 def get_setting_by_category_and_key(category: str, key: str):
     logger.info(f"GET /get-setting-by-category-and-key/{category}/{key}")
     setting_dict = get_setting_from_db(category, key)
-    if setting_dict is None:
+    if not setting_dict:
         return {"error": "Setting not found"}
     return setting_dict
