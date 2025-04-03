@@ -4,7 +4,7 @@ from pathlib import Path
 
 def load_test_json(starting_dir: str, filename: str) -> dict:
     starting_dir = os.path.abspath(starting_dir)
-    json_path = Path(starting_dir) / "data" / filename
+    json_path = Path(starting_dir) / "data" / f"test_{filename}.json"
 
     if not json_path.is_file():
         raise FileNotFoundError(f"File {json_path} does not exist.")

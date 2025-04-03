@@ -17,7 +17,7 @@
       "justMyCode": true
     },
     {
-      "name": "FastAPI (dev db mode)",
+      "name": "FastAPI - dev mode",
       "type": "debugpy",
       "request": "launch",
       "module": "uvicorn",
@@ -50,6 +50,25 @@
       "justMyCode": true,
       "env": {
         "DELETE_DB": "true"
+      }
+    },
+    {
+      "name": "FastAPI - reset dev db mode",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "main:app",
+        "--reload",
+        "--port",
+        "8000"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true,
+      "env": {
+        "DELETE_DB": "true",
+        "MODE": "dev"
       }
     }
   ]

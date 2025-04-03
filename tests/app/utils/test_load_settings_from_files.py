@@ -4,12 +4,12 @@ import pytest
 from app.utils.load_settings_from_files import load_merged_settings
 from tests.helpers.read_test_json import load_test_json
 
+CWD_DIR = os.path.dirname(os.path.abspath(__file__))
 
 @pytest.fixture
 def set_temp_settings_files(tmp_path, monkeypatch):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    user_settings = load_test_json(current_dir, "test_user_settings.json")
-    default_settings = load_test_json(current_dir, "test_default_settings.json")
+    user_settings = load_test_json(CWD_DIR, "user_settings")
+    default_settings = load_test_json(CWD_DIR, "default_settings")
 
     user_path = tmp_path / "user-settings.yml"
     default_path = tmp_path / "default-settings.yml"
