@@ -28,51 +28,33 @@ def engine_context():
     finally:
         engine.dispose()
 
-def get_engine():
-    db_url = f"sqlite:///{APP_CFG['DB_PATH']}"
-    logger.debug(f"Creating database engine for URL: {db_url}")
-    engine = create_engine(db_url, echo=False, future=True)
+def setup_db() -> None:
+    check_for_db_reset()
 
-    return engine
+    if APP_CFG['MODE'] == "prod":
+        logger.info("Setting up production database.")
+        setup_templates(TEMPLATE_SETTINGS_PATH, USER_SETTINGS_PATH)
+        init_db()
 
-def init_db(engine=None):
-    if engine is None:
-        engine = get_engine()
-        dispose_after = True
-    else:
-        dispose_after = False
+        db_settings = load_db_config(DEFAULTS_SETTINGS_PATH, USER_SETTINGS_PATH)
+        seed_settings(db_settings)
+        update_all_user_settings(USER_SETTINGS_PATH, db_settings)
+        
+    if APP_CFG['MODE'] == "e2e_testing":
+        logger.info("Setting up e2e test database.")
+        setup_templates(TEMPLATE_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
+        init_db()
 
-    if not os.path.exists(APP_CFG["DB_PATH"]):
-        logger.debug(f"Database file does not exist. Creating: {APP_CFG['DB_PATH']}.")
-        Base.metadata.create_all(bind=engine)
+def check_for_db_reset() -> None:
+    delete_db = os.environ.get("DELETE_DB", "false").strip().lower()
+    if delete_db == "true":
+        if os.path.exists(APP_CFG['DB_PATH']):
+            os.remove(APP_CFG['DB_PATH'])
+            logger.info(f"Deleted database file: {APP_CFG['DB_PATH']}")
+        else:
+            logger.warning(f"Database file does not exist, cannot delete: {APP_CFG['DB_PATH']}")
 
-    if dispose_after:
-        engine.dispose()
-
-def seed_settings(settings_dict, engine=None):
-    if engine is None:
-        engine = get_engine()
-    logger.debug(f"DB at {APP_CFG['DB_PATH']} with settings: {settings_dict}")
-
-    with Session(engine) as session:
-        for category, key_value in settings_dict.items():
-            for key, value in key_value.items():
-                if value is None and key == "start_date":
-                    value = date.today().strftime("%Y-%m-%d")
-                    logger.debug(f"Setting start_date to today, ie: {value}")
-                try:
-                    validated = SettingCreate(key=key, value=value, category=category)
-                    existing = session.query(Setting).filter_by(key=key, category=category).first()
-                    if not existing:
-                        db_setting = Setting(**validated.model_dump())
-                        session.add(db_setting)
-                        logger.info(f"Inserted: {key} in category {category}")
-                except Exception as e:
-                    raise ValueError(f"Error inserting {key} in category {category}: {e}")
-        session.commit()
-        engine.dispose()
-
-def load_db_config(default_settings_path, user_settings_path):
+def load_db_config(default_settings_path: str, user_settings_path: str) -> dict:
     user_data_dict = read_yaml_file(user_settings_path)
     default_data_dict = read_yaml_file(default_settings_path)
 
@@ -106,28 +88,63 @@ def load_db_config(default_settings_path, user_settings_path):
 
     return merged_data_dict
 
-def check_for_db_reset():
-    delete_db = os.environ.get("DELETE_DB", "false").strip().lower()
-    if delete_db == "true":
-        if os.path.exists(APP_CFG['DB_PATH']):
-            os.remove(APP_CFG['DB_PATH'])
-            logger.info(f"Deleted database file: {APP_CFG['DB_PATH']}")
-        else:
-            logger.warning(f"Database file does not exist, cannot delete: {APP_CFG['DB_PATH']}")
+def get_engine() -> object:
+    db_url = f"sqlite:///{APP_CFG['DB_PATH']}"
+    logger.debug(f"Creating database engine for URL: {db_url}")
+    engine = create_engine(db_url, echo=False, future=True)
 
-def setup_db():
-    check_for_db_reset()
+    return engine
 
-    if APP_CFG['MODE'] == "prod":
-        logger.info("Setting up production database.")
-        setup_templates(TEMPLATE_SETTINGS_PATH, USER_SETTINGS_PATH)
-        init_db()
+def init_db(engine: object=None) -> None:
+    if engine is None:
+        engine = get_engine()
+        dispose_after = True
+    else:
+        dispose_after = False
 
-        db_settings = load_db_config(DEFAULTS_SETTINGS_PATH, USER_SETTINGS_PATH)
-        seed_settings(db_settings)
-        update_all_user_settings(USER_SETTINGS_PATH, db_settings)
-        
-    if APP_CFG['MODE'] == "e2e_testing":
-        logger.info("Setting up e2e test database.")
-        setup_templates(TEMPLATE_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
-        init_db()
+    if not os.path.exists(APP_CFG["DB_PATH"]):
+        logger.debug(f"Database file does not exist. Creating: {APP_CFG['DB_PATH']}.")
+        Base.metadata.create_all(bind=engine)
+
+    if dispose_after:
+        engine.dispose()
+
+def re_init_db() -> None:
+    if os.path.exists(APP_CFG['DB_PATH']):
+        os.remove(APP_CFG['DB_PATH'])
+        logger.info(f"Deleted database file: {APP_CFG['DB_PATH']}")
+
+    init_db()
+
+def seed_settings(settings_dict: dict, engine: object=None) -> None:
+    if engine is None:
+        engine = get_engine()
+    logger.debug(f"DB at {APP_CFG['DB_PATH']} with settings: {settings_dict}")
+
+    with Session(engine) as session:
+        for category, key_value in settings_dict.items():
+            for key, value in key_value.items():
+                if value is None and key == "start_date":
+                    value = date.today().strftime("%Y-%m-%d")
+                    logger.debug(f"Setting start_date to today, ie: {value}")
+                try:
+                    validated = SettingCreate(key=key, value=value, category=category)
+                    existing = session.query(Setting).filter_by(key=key, category=category).first()
+                    if not existing:
+                        db_setting = Setting(**validated.model_dump())
+                        session.add(db_setting)
+                        logger.info(f"Inserted: {key} in category {category}")
+                except Exception as e:
+                    raise ValueError(f"Error inserting {key} in category {category}: {e}")
+        session.commit()
+        engine.dispose()
+
+def seed_data(data_dict: dict, engine: object=None) -> None:
+    if engine is None:
+        engine = get_engine()
+    logger.debug(f"DB at {APP_CFG['DB_PATH']} with data: {data_dict}")
+
+    with Session(engine) as session:
+        # Add your data seeding logic here
+        session.commit()
+        engine.dispose()
