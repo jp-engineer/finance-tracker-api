@@ -1,8 +1,11 @@
+import pytest
 import os
 import logging
 import tempfile
 from app.utils.setup_app_logging import setup_app_logging
 
+@pytest.mark.unit
+@pytest.mark.utils
 def test_setup_app_logging_creates_log_file_and_handlers():
     temp_log_dir = tempfile.mkdtemp()
     log_file_name = "test-ft-api.log"

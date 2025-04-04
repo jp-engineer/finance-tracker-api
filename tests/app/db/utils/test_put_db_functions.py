@@ -1,7 +1,8 @@
 import pytest
 pytestmark = [
     pytest.mark.unit,
-    pytest.mark.db
+    pytest.mark.db,
+    pytest.mark.db_utils
 ]
 
 import os

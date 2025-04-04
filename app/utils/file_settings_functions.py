@@ -15,7 +15,7 @@ def validate_setting(category: str, key: str, value: str) -> bool:
             value=value
         )
         return True
-    except ValidationError as e:
+    except (ValidationError, ValueError) as e:
         logger.warning(f"Invalid setting [{category}.{key}] = {value}: {e}")
         return False
 

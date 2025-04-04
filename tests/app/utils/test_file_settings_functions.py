@@ -1,81 +1,59 @@
-# import os
-# import yaml
-# import pytest
-# from app.utils.file_settings_functions import load_merged_settings, update_all_user_settings
-# from tests.helpers.read_test_data import load_test_json
+import pytest
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.utils
+]
 
-# CWD_DIR = os.path.dirname(os.path.abspath(__file__))
+from datetime import date
+import yaml
+from app.utils.file_settings_functions import validate_setting, update_all_user_settings
 
-# @pytest.mark.unit
-# def test_load_merged_settings(tmp_path):
-#     user_settings = load_test_json(CWD_DIR, "user_settings")
-#     default_settings = load_test_json(CWD_DIR, "default_settings")
+TEST_USER_SETTINGS_PATH = "tests/app/user/test_user-settings.yml"
 
-#     user_path = tmp_path / "user-settings.yml"
-#     default_path = tmp_path / "default-settings.yml"
-#     template_dir = tmp_path / "templates"
-#     template_dir.mkdir()
+def test_update_all_user_settings_valid_setting():
+    result = validate_setting("general", "currency", "USD")
+    assert result is True
 
-#     user_path.write_text(yaml.dump(user_settings))
-#     default_path.write_text(yaml.dump(default_settings))
+def test_update_all_user_settings_invalid_setting_enum_category():
+    result = validate_setting("not_a_category", "currency", "USD")
+    assert result is False
 
-#     (template_dir / "user-settings.yml").write_text(yaml.dump(user_settings))
+def test_update_all_user_settings_invalid_setting_value_format():
+    result = validate_setting("view", "date_format", "04/04/2025")  # Not ISO-style
+    assert result is False
 
-#     merged = load_merged_settings(
-#         user_settings_path=str(user_path),
-#         default_settings_path=str(default_path)
-#     )
+def test_update_all_user_settings_updates_valid_settings_and_writes_file(tmp_path):
+    temp_settings_path = tmp_path / "updated-user-settings.yml"
 
-#     assert merged["general"]["country_code"] == user_settings["general"]["country_code"]
-#     assert merged["view"]["user_name"] == user_settings["view"]["user_name"]
-#     assert merged["view"]["date_format"] == user_settings["view"]["date_format"]
-#     assert merged["developer"]["start_date"] == user_settings["developer"]["start_date"]
+    settings_dict = {
+        "general": {
+            "currency": "GBP"
+        },
+        "view": {
+            "date_format": "yyyy-mm-dd"
+        },
+        "developer": {
+            "start_date": date.today().strftime("%Y-%m-%d")
+        }
+    }
+    update_all_user_settings(user_settings_path=str(temp_settings_path), settings=settings_dict)
 
-# @pytest.mark.unit
-# def test_invalid_country_code_falls_back_to_default(tmp_path, caplog):
-#     invalid_user_settings = load_test_json(CWD_DIR, "user_settings_invalid")
-#     default_settings = load_test_json(CWD_DIR, "default_settings")
+    assert temp_settings_path.exists()
 
-#     user_path = tmp_path / "user-settings.yml"
-#     default_path = tmp_path / "default-settings.yml"
-#     template_dir = tmp_path / "templates"
-#     template_dir.mkdir()
+    with open(temp_settings_path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
 
-#     user_path.write_text(yaml.dump(invalid_user_settings))
-#     default_path.write_text(yaml.dump(default_settings))
-#     (template_dir / "user-settings.yml").write_text(yaml.dump(invalid_user_settings))
+    assert data["general"]["currency"] == "GBP"
+    assert data["view"]["date_format"] == "yyyy-mm-dd"
+    assert data["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
 
-#     with caplog.at_level("WARNING"):
-#         merged = load_merged_settings(
-#             user_settings_path=str(user_path),
-#             default_settings_path=str(default_path)
-#         )
+def test_update_all_user_settings_raises_value_error_on_invalid_setting(tmp_path):
+    temp_path = tmp_path / "bad-settings.yml"
+    bad_settings = {
+        "view": {
+            "date_format": "INVALID_FORMAT"
+        }
+    }
 
-#     assert merged["general"]["country_code"] == default_settings["general"]["country_code"]
-#     assert "Invalid setting [general.country_code]" in caplog.text
-
-# @pytest.mark.unit
-# def test_update_all_user_settings_writes_valid_file(tmp_path):
-#     settings = load_test_json(CWD_DIR, "user_settings")
-#     user_path = tmp_path / "user-settings.yml"
-
-#     result = update_all_user_settings(str(user_path), settings)
-
-#     assert user_path.exists()
-
-#     with open(user_path, "r", encoding="utf-8") as f:
-#         written = yaml.safe_load(f)
-
-#     assert written["general"] == settings["general"]
-#     assert written["view"] == settings["view"]
-#     assert written["developer"] == settings["developer"]
-
-# @pytest.mark.unit
-# def test_update_all_user_settings_invalid_raises(tmp_path):
-#     invalid_settings = load_test_json(CWD_DIR, "user_settings_invalid")
-#     user_path = tmp_path / "user-settings.yml"
-
-#     with pytest.raises(ValueError) as e:
-#         update_all_user_settings(str(user_path), invalid_settings)
-
-#     assert "Invalid setting" in str(e.value)
+    with pytest.raises(ValueError, match="Invalid setting: view.date_format"):
+        update_all_user_settings(user_settings_path=str(temp_path), settings=bad_settings)
