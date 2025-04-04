@@ -2,6 +2,8 @@ from datetime import date
 import pytest
 from app.db.utils.get_db_functions import get_all_settings_from_db, get_setting_from_db
 
+USER_SETTINGS_FILE = "app/user/user-settings.yml"
+
 @pytest.mark.unit
 @pytest.mark.db
 class TestGetDBFunctions:
