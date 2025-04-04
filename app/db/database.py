@@ -1,7 +1,6 @@
 import os
 from datetime import date
 from contextlib import contextmanager
-import yaml
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from app.config import APP_CFG
