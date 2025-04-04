@@ -1,0 +1,7 @@
+{
+    "GET": [
+        "/get-init-message",
+        "/get-app-config",
+        "/get-db-config"
+    ]
+}
