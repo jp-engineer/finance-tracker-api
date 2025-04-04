@@ -32,15 +32,15 @@ def test_test_mode_paths(monkeypatch):
     assert config.DB_PATH == os.path.join("tests", "app", "db", "test-finances.db")
     assert config.SEED_DIR == os.path.join("tests", "app", "db", "seed")
 
-# @pytest.mark.unit
-# def test_e2e_test_mode_paths(monkeypatch):
-#     monkeypatch.setenv("MODE", "e2e_test")
-#     config = reload_config_module_with_mode("e2e_test")
+@pytest.mark.unit
+def test_e2e_testing_mode_paths(monkeypatch):
+    monkeypatch.setenv("MODE", "e2e_testing")
+    config = reload_config_module_with_mode("e2e_testing")
 
-#     assert config.MODE == "e2e_test"
-#     assert config.DB_FILENAME == "test-finances.db"
-#     assert config.DB_PATH == os.path.join("tests", "app", "db", "test-finances.db")
-#     assert config.SEED_DIR == os.path.join("tests", "app", "db", "seed")
+    assert config.MODE == "e2e_testing"
+    assert config.DB_FILENAME == "test-finances.db"
+    assert config.DB_PATH == os.path.join("tests", "app", "db", "test-finances.db")
+    assert config.SEED_DIR == os.path.join("tests", "app", "db", "seed")
 
 @pytest.mark.unit
 def test_invalid_mode_exits(monkeypatch):
