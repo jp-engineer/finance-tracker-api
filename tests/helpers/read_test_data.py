@@ -2,6 +2,7 @@ import os
 import json
 import yaml
 
+DB_PATH = "tests/app/db/test-finances.db"
 TEST_DATA_ROOT = "tests/data/"
 
 def load_test_data_file(file_name: str) -> dict:
@@ -20,3 +21,7 @@ def load_test_data_file(file_name: str) -> dict:
         raise ValueError("Unsupported file type. Only .json and .yml/.yaml are supported.")
     
     return data_dict
+
+def check_test_db_path_exists():
+    exists = os.path.exists(DB_PATH)
+    return exists
