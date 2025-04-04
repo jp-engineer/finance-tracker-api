@@ -3,7 +3,7 @@ import pytest
 from fastapi.testclient import TestClient
 from main import app
 from app.config import APP_CFG
-from app.db.database import init_db, seed_settings, load_db_config
+from app.db.database import init_db, seed_settings, load_db_config, get_engine
 from app.utils.setup_templated_files import setup_templates
 from app.utils.file_settings_functions import update_all_user_settings
 
@@ -27,12 +27,17 @@ def client():
     with TestClient(app) as c:
         setup_templates(TEMPLATE_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
         init_db()
+        
         db_settings = load_db_config(DEFAULTS_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
         seed_settings(db_settings)
         update_all_user_settings(TEST_USER_SETTINGS_PATH, db_settings)
+
         yield c
 
         os.remove(TEST_USER_SETTINGS_PATH)
+        engine = get_engine()
+        engine.dispose()
+        os.remove(APP_CFG["DB_PATH"])
 
 @pytest.fixture(scope="module")
 def api_prefix():

@@ -71,6 +71,7 @@ def seed_settings(settings_dict, engine=None):
                 except Exception as e:
                     logger.error(f"Validation failed for {category}.{key}: {value} | {e}")
         session.commit()
+        engine.dispose()
 
 def load_db_config(default_settings_path, user_settings_path):
     user_data_dict = read_yaml_file(user_settings_path)
