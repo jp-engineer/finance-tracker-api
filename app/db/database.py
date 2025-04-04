@@ -85,6 +85,13 @@ def load_db_config(default_settings_path, user_settings_path):
     user_data_dict = read_yaml_file(user_settings_path)
     default_data_dict = read_yaml_file(default_settings_path)
 
+    for category, keys in user_data_dict.items():
+        for key, value in list(keys.items()):
+            if value is None:
+                if key != 'start_date':
+                    del user_data_dict[category][key]
+                    logger.debug(f"Removed empty value for {category}.{key}")
+
     merged_data_dict = {**default_data_dict, **user_data_dict}
     logger.debug(f"Merged settings: {merged_data_dict}")
 
@@ -101,7 +108,7 @@ def check_for_db_reset():
             os.remove(APP_CFG['DB_PATH'])
             logger.info(f"Deleted database file: {APP_CFG['DB_PATH']}")
         else:
-            logger.warning(f"Database file does not exist, cannot delete: {APP_CFG['{DB_PATH}']}")
+            logger.warning(f"Database file does not exist, cannot delete: {APP_CFG['DB_PATH']}")
 
 def setup_db():
     check_for_db_reset()
@@ -111,22 +118,20 @@ def setup_db():
         setup_templates(TEMPLATE_SETTINGS_PATH, USER_SETTINGS_PATH)
         init_db()
 
-        db_settings = load_db_config(USER_SETTINGS_PATH, DEFAULTS_SETTINGS_PATH)
+        db_settings = load_db_config(DEFAULTS_SETTINGS_PATH, USER_SETTINGS_PATH)
         seed_settings(db_settings)
-
         update_all_user_settings(USER_SETTINGS_PATH, db_settings)
         
     if APP_CFG['MODE'] == "e2e_test":
         logger.info("Setting up e2e test database.")
         pass
 
-    # remove and use test fixtures instead
-    if APP_CFG['MODE'] == "test":
-        logger.info("Setting up test database.")
-        setup_templates(TEMPLATE_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
-        init_db()
+    # # remove and use test fixtures instead
+    # if APP_CFG['MODE'] == "test":
+    #     logger.info("Setting up test database.")
+    #     setup_templates(TEMPLATE_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
+    #     init_db()
 
-        db_settings = load_db_config(DEFAULTS_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
-
-        seed_settings(db_settings)
-        update_all_user_settings(TEST_USER_SETTINGS_PATH, db_settings)
+    #     db_settings = load_db_config(DEFAULTS_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
+    #     seed_settings(db_settings)
+    #     update_all_user_settings(TEST_USER_SETTINGS_PATH, db_settings)
