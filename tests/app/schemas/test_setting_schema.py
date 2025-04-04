@@ -1,43 +1,86 @@
-# import os
-# import pytest
-# from app.schemas.setting import SettingCreate
-# from pydantic import ValidationError
-# from tests.helpers.read_test_data import load_test_json
+import pytest
+from pydantic import ValidationError
+from app.schemas.setting import SettingCreate
+from app.schemas.enums import SettingCategoryEnum
 
-# CWD_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# @pytest.mark.unit
-# @pytest.mark.schema
-# def test_valid_setting_create_schema():
-#     valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
-#     valid_key = valid_setting_data.get("key")
-#     valid_value = valid_setting_data.get("value")
-#     valid_category = valid_setting_data.get("category")
+class TestSettingBase:
+    def test_validate_combination_valid_country_code(self):
+        setting = SettingCreate(
+            key="country_code",
+            value="GB",
+            category=SettingCategoryEnum.general
+        )
+        assert setting.value == "GB"
 
-#     setting = SettingCreate(**valid_setting_data)
-    
-#     assert setting.key == valid_key
-#     assert setting.value == valid_value
-#     assert setting.category == valid_category
+    def test_validate_combination_invalid_country_code(self):
+        with pytest.raises(ValidationError, match="Invalid country code: XX"):
+            SettingCreate(
+                key="country_code",
+                value="XX",
+                category=SettingCategoryEnum.general
+            )
 
-# @pytest.mark.unit
-# @pytest.mark.schema
-# def test_invalid_setting_category():
-#     valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
+    def test_validate_combination_valid_currency_code(self):
+        setting = SettingCreate(
+            key="default_currency",
+            value="USD",
+            category=SettingCategoryEnum.view
+        )
+        assert setting.value == "USD"
 
-#     valid_key = valid_setting_data.get("key")
-#     valid_value = valid_setting_data.get("value")
-#     invalid_category = "invalid_category"
-#     data = {"key": valid_key, "value": valid_value, "category": invalid_category}
+    def test_validate_combination_invalid_currency_code(self):
+        with pytest.raises(ValidationError, match="Invalid currency code: FAKE"):
+            SettingCreate(
+                key="default_currency",
+                value="FAKE",
+                category=SettingCategoryEnum.view
+            )
 
-#     with pytest.raises(ValidationError):
-#         SettingCreate(**data)
+    def test_validate_combination_valid_date_format(self):
+        setting = SettingCreate(
+            key="date_format",
+            value="yyyy-mm-dd",
+            category=SettingCategoryEnum.view
+        )
+        assert setting.value == "yyyy-mm-dd"
 
-# @pytest.mark.unit
-# @pytest.mark.schema
-# def test_missing_field_in_setting():
-#     valid_setting_data = load_test_json(CWD_DIR, "valid_setting")
-#     del valid_setting_data["key"]
+    def test_validate_combination_invalid_date_format(self):
+        with pytest.raises(ValidationError, match="Invalid date format: 04/04/2025"):
+            SettingCreate(
+                key="date_format",
+                value="04/04/2025",
+                category=SettingCategoryEnum.view
+            )
 
-#     with pytest.raises(ValidationError):
-#         SettingCreate(**valid_setting_data)
+    def test_validate_combination_validate_combination_valid_week_start_day(self):
+        setting = SettingCreate(
+            key="week_starts_on",
+            value="monday",
+            category=SettingCategoryEnum.view
+        )
+        assert setting.value == "monday"
+
+    def test_validate_combination_invalid_week_start_day(self):
+        with pytest.raises(ValidationError, match="Invalid week start day: funday"):
+            SettingCreate(
+                key="week_starts_on",
+                value="funday",
+                category=SettingCategoryEnum.view
+            )
+
+    def test_validate_combination_valid_enum_category(self):
+        setting = SettingCreate(
+            key="currency",
+            value="USD",
+            category=SettingCategoryEnum.general
+        )
+        assert setting.category == SettingCategoryEnum.general
+
+    def test_validate_combination_invalid_enum_category(self):
+        with pytest.raises(ValidationError):
+            SettingCreate(
+                key="currency",
+                value="USD",
+                category="not_a_valid_category"
+            )
