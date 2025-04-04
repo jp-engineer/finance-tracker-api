@@ -9,7 +9,8 @@ MODE = os.environ.get("MODE", "prod").strip().lower()
 MODE_TO_FILENAME = {
     "prod": "finances.db",
     "dev": "dev-finances.db",
-    "test": "test-finances.db"
+    "test": "test-finances.db",
+    "e2e_testing": "test-finances.db",
 }
 if MODE in MODE_TO_FILENAME:
     DB_FILENAME = MODE_TO_FILENAME[MODE]
@@ -17,7 +18,7 @@ else:
     logger.error(f"Invalid MODE selected for DB: {MODE}. Exiting.")
     sys.exit(1)
     
-if MODE == "test":
+if MODE == "test" or MODE == "e2e_testing":
     DB_PATH = os.path.join("tests", "app", "db", DB_FILENAME)
     SEED_DIR = os.path.join("tests", "app", "db", "seed")
 else:

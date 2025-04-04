@@ -5,7 +5,6 @@ pytestmark = [
     pytest.mark.db_utils
 ]
 
-import os
 from sqlalchemy.orm import Session
 from app.config import APP_CFG
 from app.db.database import get_engine, init_db

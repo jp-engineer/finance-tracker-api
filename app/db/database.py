@@ -127,6 +127,7 @@ def setup_db():
         seed_settings(db_settings)
         update_all_user_settings(USER_SETTINGS_PATH, db_settings)
         
-    if APP_CFG['MODE'] == "e2e_test":
+    if APP_CFG['MODE'] == "e2e_testing":
         logger.info("Setting up e2e test database.")
-        pass
+        setup_templates(TEMPLATE_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
+        init_db()
