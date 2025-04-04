@@ -18,21 +18,16 @@ def validate_setting(category: str, key: str, value: str) -> bool:
     except ValidationError as e:
         logger.warning(f"Invalid setting [{category}.{key}] = {value}: {e}")
         return False
-
+    
+        
 def load_merged_settings(user_settings_path: str ="app/user/user-settings.yml",
-                         default_settings_path: str ="app/defaults/default-settings.yml",
-                         load_templates: bool = False,
-                         templates_dir: str ="app/templates"):
+                         default_settings_path: str ="app/defaults/default-settings.yml"):
     def read_yaml(path):
         try:
             data = yaml.safe_load(open(path,  "r", encoding='utf-8'))
             return data
         except FileNotFoundError:
             logger.error(f"File {path} not found. Returning empty dictionary.")
-            return {}
-
-    if load_templates:
-        setup_templates(user_settings_path, templates_dir)
 
     user = read_yaml(user_settings_path)
     default = read_yaml(default_settings_path)

@@ -23,9 +23,7 @@ def test_load_merged_settings(tmp_path):
 
     merged = load_merged_settings(
         user_settings_path=str(user_path),
-        default_settings_path=str(default_path),
-        load_templates=False,
-        templates_dir=str(template_dir)
+        default_settings_path=str(default_path)
     )
 
     assert merged["general"]["country_code"] == user_settings["general"]["country_code"]
@@ -50,9 +48,7 @@ def test_invalid_country_code_falls_back_to_default(tmp_path, caplog):
     with caplog.at_level("WARNING"):
         merged = load_merged_settings(
             user_settings_path=str(user_path),
-            default_settings_path=str(default_path),
-            load_templates=False,
-            templates_dir=str(template_dir)
+            default_settings_path=str(default_path)
         )
 
     assert merged["general"]["country_code"] == default_settings["general"]["country_code"]
