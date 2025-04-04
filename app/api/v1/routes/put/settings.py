@@ -11,7 +11,7 @@ router = APIRouter(prefix="/settings")
 @router.put("/put-all-settings")
 def put_all_settings(input_settings: dict):
     logger.info("PUT /put-all-settings")
-    put_all_settings_to_db(input_settings)
-    update_all_user_settings(input_settings)
+    put_all_settings_to_db(settings=input_settings)
+    update_all_user_settings(settings=input_settings)
 
     return {"message": "Settings updated successfully"}
