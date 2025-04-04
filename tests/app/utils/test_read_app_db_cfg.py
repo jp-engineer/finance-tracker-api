@@ -1,8 +1,20 @@
+def test_check_entries_present_in_settings_table_returns_true():
+    pass
+
+def test_check_entries_present_in_settings_table_returns_false():
+    pass
+
+def test_get_db_cfg_dict_with_db_exists():
+    pass
+
+def test_get_db_cfg_dict_with_db_does_not_exist():
+    pass
+
 # import pytest
 # from app.db.database import init_db, engine_context
 # from app.utils.read_app_db_cfg import get_db_cfg_dict
 # from app.config import APP_CFG
-# from app.utils.read_app_db_cfg import check_entry_in_settings_table
+# from app.utils.read_app_db_cfg import check_entries_present_in_settings_table
 
 # @pytest.mark.unit
 # @pytest.mark.db
@@ -13,7 +25,7 @@
 #     init_db()
 
 #     with engine_context() as engine:
-#         result = check_entry_in_settings_table(engine)
+#         result = check_entries_present_in_settings_table(engine)
 #         assert result is False
 
 # @pytest.mark.unit
