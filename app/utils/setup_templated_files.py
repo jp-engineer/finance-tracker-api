@@ -3,10 +3,9 @@ import os
 import logging
 logger = logging.getLogger(__name__)
 
-def setup_templates(user_setting_path: str, templates_dir: str) -> None:
+def setup_templates(template_settings_path: str, user_setting_path: str) -> None:
     def setup_user_settings_yml():
         if not os.path.exists(user_setting_path):
-            template_settings_path = os.path.join(templates_dir, "user-settings.yml")
             if not os.path.exists(template_settings_path):
                 logger.error(f"Template file {template_settings_path} does not exist.")
                 raise FileNotFoundError(f"Template file {template_settings_path} does not exist.")
