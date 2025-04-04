@@ -8,18 +8,18 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # --- Status Routes ---
-@router.get("/get-init-message")
+@router.get("/")
 def get_index_init_message():
-    logger.info("GET /get-init-message")
+    logger.info("GET /")
     return {"message": "finance-tracker API is running"}
 
-@router.get("/get-app-config")
+@router.get("/app/get-config")
 def get_index_app_config():
-    logger.info("GET /get-app-config")
+    logger.info("GET /app/get-config")
     return APP_CFG
 
-@router.get("/get-db-config")
+@router.get("/db/get-config")
 def get_index_db_config():
-    logger.info("GET /get-db-config")
+    logger.info("GET /db/get-config")
     db_cfg = get_db_cfg_dict()
     return db_cfg

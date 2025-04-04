@@ -6,13 +6,13 @@ pytestmark = [
 
 class TestAPIIndex:
     def test_get_index_init_message(self, client, api_prefix):
-        response = client.get(f"{api_prefix}/get-init-message")
+        response = client.get(f"{api_prefix}/")
         
         assert response.status_code == 200
         assert response.json() == {"message": "finance-tracker API is running"}
 
     def test_get_index_app_config_items(self, client, api_prefix):
-        response = client.get(f"{api_prefix}/get-app-config")
+        response = client.get(f"{api_prefix}/app/get-config")
         response_dict = response.json()
 
         assert response.status_code == 200
@@ -23,7 +23,7 @@ class TestAPIIndex:
         assert response_dict["SEED_DIR"] == "tests\\app\\db\\seed"
 
     def test_get_index_db_config(self, client, api_prefix):
-        response = client.get(f"{api_prefix}/get-db-config")
+        response = client.get(f"{api_prefix}/db/get-config")
         response_dict = response.json()
 
         assert response.status_code == 200
@@ -35,7 +35,7 @@ class TestAPIIndex:
         assert response_dict["HAS_DATA"] == True
 
 def test_get_index_db_config_with_no_db(client_without_db, api_prefix):
-    response = client_without_db.get(f"{api_prefix}/get-db-config")
+    response = client_without_db.get(f"{api_prefix}/db/get-config")
     response_dict = response.json()
 
     assert response.status_code == 200
