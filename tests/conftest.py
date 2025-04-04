@@ -19,8 +19,6 @@ def import_app_and_cfg():
 
     return imported
 
-def teardown_test_db():
-
 @pytest.fixture
 def client_without_db():
     imported = import_app_and_cfg()
