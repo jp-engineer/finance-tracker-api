@@ -9,4 +9,4 @@ router = APIRouter(prefix="/e2e-testing")
 @router.get("/")
 def get_e2e_mode_check():
     logger.info("GET /e2e-testing/")
-    return {"status": "e2e-testing is running"}
+    return {"status": "e2e-testing is enabled"}

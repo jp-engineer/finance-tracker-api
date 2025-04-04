@@ -9,5 +9,7 @@ ROUTE = "/e2e-testing"
 class TestAPIIndex:
     def test_get_e2e_mode_check(self, e2e_client, api_prefix):
         response = e2e_client.get(f"{api_prefix}{ROUTE}/")
+        response_json = response.json()
         
         assert response.status_code == 200
+        assert response_json["status"] == "e2e-testing is enabled"
