@@ -8,13 +8,13 @@ from app.db.database import engine_context
 import logging
 logger = logging.getLogger(__name__)
 
-def check_entry_in_settings_table(engine):
+def check_entries_present_in_settings_table(engine: object) -> bool:
     with Session(engine) as session:
         count = session.query(Setting).count()
         logger.debug(f"Settings table entry count: {count}")
         return count > 0
 
-def get_db_cfg_dict():
+def get_db_cfg_dict() -> dict:
     db_path = APP_CFG["DB_PATH"]
     exists = os.path.exists(db_path)
 
@@ -35,7 +35,7 @@ def get_db_cfg_dict():
         inspector = inspect(engine)
         table_names = inspector.get_table_names()
         has_settings_table = "settings" in table_names
-        has_data = check_entry_in_settings_table(engine) if has_settings_table else False
+        has_data = check_entries_present_in_settings_table(engine) if has_settings_table else False
 
         cfg = {
             "DB_PATH": db_path,
