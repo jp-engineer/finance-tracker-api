@@ -68,7 +68,7 @@ def seed_settings(settings_dict, engine=None):
                         session.add(db_setting)
                         logger.info(f"Inserted: {key} in category {category}")
                 except Exception as e:
-                    logger.error(f"Validation failed for {category}.{key}: {value} | {e}")
+                    raise ValueError(f"Error inserting {key} in category {category}: {e}")
         session.commit()
         engine.dispose()
 
@@ -76,12 +76,26 @@ def load_db_config(default_settings_path, user_settings_path):
     user_data_dict = read_yaml_file(user_settings_path)
     default_data_dict = read_yaml_file(default_settings_path)
 
+    updated_data_dict = {}
     for category, keys in user_data_dict.items():
         for key, value in list(keys.items()):
+            if category not in updated_data_dict:
+                updated_data_dict[category] = {}
+
             if value is None:
                 if key != 'start_date':
-                    del user_data_dict[category][key]
                     logger.debug(f"Removed empty value for {category}.{key}")
+                    continue
+                else:
+                    logger.debug(f"start_date is None, setting to today")
+                    updated_data_dict[category][key] = date.today().strftime("%Y-%m-%d")
+            else:
+                updated_data_dict[category][key] = value
+
+    for category, subcategory_dict in updated_data_dict.items():
+        for key, value in list(subcategory_dict.items()):
+            if key not in default_data_dict[category].keys():
+                raise ValueError(f"Key {key} in {category} not found in default settings.")
 
     merged_data_dict = {**user_data_dict, **default_data_dict}
     logger.debug(f"Merged settings: {merged_data_dict}")
