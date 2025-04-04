@@ -70,6 +70,25 @@
         "DELETE_DB": "true",
         "MODE": "dev"
       }
+    },
+    {
+      "name": "FastAPI - e2e_testing mode with db reset",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "main:app",
+        "--reload",
+        "--port",
+        "8000"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true,
+      "env": {
+        "DELETE_DB": "true",
+        "MODE": "e2e_testing"
+      }
     }
   ]
 }

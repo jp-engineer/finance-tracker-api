@@ -1,7 +1,7 @@
 import pytest
 pytestmark = [
     pytest.mark.unit,
-    pytest.mark.schemas
+    pytest.mark.schema
 ]
 
 from pydantic import ValidationError
