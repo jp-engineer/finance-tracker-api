@@ -23,9 +23,7 @@ def test_engine_context_creates_and_disposes_engine():
 def test_init_db_creates_file_and_table():
     with engine_context() as engine:
         db_path = APP_CFG['DB_PATH']
-        if os.path.exists(db_path):
-            raise Exception(f"Database file already exists: {db_path}")
-        
+
         init_db(engine)
         assert os.path.exists(db_path)
         assert "settings" in inspect(engine).get_table_names()

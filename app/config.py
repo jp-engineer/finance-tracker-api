@@ -31,12 +31,3 @@ APP_CFG = {
     "SEED_DIR": SEED_DIR,
 }
 logger.info(f"App config initialized: {APP_CFG}")
-
-def check_for_db_reset():
-    delete_db = os.environ.get("DELETE_DB", "false").strip().lower()
-    if delete_db == "true":
-        if os.path.exists(DB_PATH):
-            os.remove(DB_PATH)
-            logger.info(f"Deleted database file: {DB_PATH}")
-        else:
-            logger.warning(f"Database file does not exist, cannot delete: {DB_PATH}")
