@@ -1,0 +1,15 @@
+{
+    "general": {
+        "country_code": "gb"
+    },
+    "view": {
+        "user_name": "pal",
+        "week_starts_on": "monday",
+        "date_format": "dd-mm-yyyy",
+        "default_currency": "GBP",
+        "default_currency_symbol": "£"
+      },
+    "developer": {
+        "start_date": "2025-04-02"
+    }
+}

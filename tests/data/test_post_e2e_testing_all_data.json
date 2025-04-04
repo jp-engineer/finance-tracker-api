@@ -1,0 +1,232 @@
+{
+    "accounts": [
+      {
+        "account_type": "credit",
+        "reference": "Amex Platinum",
+        "currency": "GBP",
+        "starting_balance": 0.0,
+        "active": true,
+        "credit_limit": 10000.0,
+        "interest_rate": 19.9,
+        "minimum_payment_pct": 0.05,
+        "due_date": 25
+      },
+      {
+        "account_type": "debit",
+        "reference": "Nationwide Current",
+        "currency": "GBP",
+        "starting_balance": 1200.0,
+        "active": true,
+        "overdraft_limit": 500.0,
+        "interest_rate": 0.0
+      },
+      {
+        "account_type": "independent",
+        "reference": "Piggy Bank",
+        "currency": "GBP",
+        "starting_balance": 300.0,
+        "active": true
+      }
+    ],
+    "folios": [
+      {
+        "name": "Tesco",
+        "category": "Shopping",
+        "subcategory": "Groceries"
+      },
+      {
+        "name": "Netflix",
+        "category": "Entertainment",
+        "subcategory": "Streaming"
+      },
+      {
+        "name": "Scottish Power",
+        "category": "Utilities",
+        "subcategory": "Electricity"
+      },
+      {
+        "name": "GymBox",
+        "category": "Health & Fitness",
+        "subcategory": "Gym Membership"
+      },
+      {
+        "name": "HMRC",
+        "category": "Income",
+        "subcategory": "Tax Refund"
+      }
+    ],
+    "transactions": [
+      {
+        "transaction_type": "payment",
+        "amount": 8.99,
+        "date": "2025-03-01",
+        "description": "Netflix Subscription",
+        "paid": true,
+        "to_account_id": 1,
+        "folio_id": 2
+      },
+      {
+        "transaction_type": "payment",
+        "amount": 35.00,
+        "date": "2025-03-02",
+        "description": "GymBox Monthly",
+        "paid": true,
+        "to_account_id": 1,
+        "folio_id": 4
+      },
+      {
+        "transaction_type": "payment",
+        "amount": 56.20,
+        "date": "2025-03-03",
+        "description": "Electricity Bill",
+        "paid": true,
+        "to_account_id": 1,
+        "folio_id": 3
+      },
+      {
+        "transaction_type": "expense",
+        "amount": 42.00,
+        "date": "2025-03-04",
+        "description": "Tesco groceries",
+        "paid": true,
+        "from_account_id": 2,
+        "folio_id": 1
+      },
+      {
+        "transaction_type": "expense",
+        "amount": 5.99,
+        "date": "2025-03-05",
+        "description": "Amazon Prime trial",
+        "paid": true,
+        "from_account_id": 2,
+        "folio_id": 1
+      },
+      {
+        "transaction_type": "expense",
+        "amount": 18.00,
+        "date": "2025-03-06",
+        "description": "Coffee & snacks",
+        "paid": false,
+        "from_account_id": 2,
+        "folio_id": 1
+      },
+      {
+        "transaction_type": "transfer",
+        "amount": 100.00,
+        "date": "2025-03-07",
+        "description": "Top up Piggy Bank",
+        "paid": true,
+        "from_account_id": 2,
+        "to_account_id": 3
+      },
+      {
+        "transaction_type": "transfer",
+        "amount": 200.00,
+        "date": "2025-03-08",
+        "description": "Credit Card Payment",
+        "paid": true,
+        "from_account_id": 2,
+        "to_account_id": 1
+      },
+      {
+        "transaction_type": "transfer",
+        "amount": 50.00,
+        "date": "2025-03-09",
+        "description": "Move savings",
+        "paid": false,
+        "from_account_id": 2,
+        "to_account_id": 3
+      },
+      {
+        "transaction_type": "expense",
+        "amount": 13.45,
+        "date": "2025-03-10",
+        "description": "Tesco snacks",
+        "paid": true,
+        "from_account_id": 2,
+        "folio_id": 1
+      }
+    ],
+    "recurring_transactions": [
+      {
+        "transaction_type": "payment",
+        "description": "Netflix Subscription",
+        "amount": 8.99,
+        "variable": false,
+        "estimate": null,
+        "expires": false,
+        "expires_after": null,
+        "expires_on": null,
+        "ignores_bank_holidays": true,
+        "ignores_weekends": true,
+        "pays_early": true,
+        "freq_per_month": 1,
+        "folio_id": 2,
+        "to_account_id": 1
+      }
+    ],
+    "scheduled_transactions": [
+      {
+        "transaction_type": "payment",
+        "recurring_transaction_id": 1,
+        "amount": 8.99,
+        "description": "Netflix",
+        "scheduled_date": "2025-04-01",
+        "pending": true,
+        "folio_id": 2,
+        "to_account_id": 1
+      },
+      {
+        "transaction_type": "payment",
+        "recurring_transaction_id": 1,
+        "amount": 8.99,
+        "description": "Netflix",
+        "scheduled_date": "2025-05-01",
+        "pending": true,
+        "folio_id": 2,
+        "to_account_id": 1
+      },
+      {
+        "transaction_type": "payment",
+        "recurring_transaction_id": 1,
+        "amount": 8.99,
+        "description": "Netflix",
+        "scheduled_date": "2025-06-01",
+        "pending": true,
+        "folio_id": 2,
+        "to_account_id": 1
+      }
+    ],
+    "settings": [
+      {
+        "category": "general",
+        "key": "country_code",
+        "value": "gb"
+      },
+      {
+        "category": "view",
+        "key": "user_name",
+        "value": "pal"
+      },
+      {
+        "category": "view",
+        "key": "week_starts_on",
+        "value": "monday"
+      },
+      {
+        "category": "view",
+        "key": "date_format",
+        "value": "yyyy-mm-dd"
+      },
+      {
+        "category": "view",
+        "key": "default_currency",
+        "value": "gbp"
+      },
+      {
+        "category": "developer",
+        "key": "start_date",
+        "value": "2025-04-02"
+      }
+    ]
+}
