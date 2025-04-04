@@ -1,8 +1,6 @@
 from pydantic import BaseModel, model_validator
 from app.schemas.enums import FolioCategoryEnum
 
-CATEGORIES = [category.value for category in FolioCategoryEnum]
-
 class FolioBase(BaseModel):
     name: str
     category: FolioCategoryEnum
@@ -20,8 +18,6 @@ class FolioBase(BaseModel):
             raise ValueError("Name cannot exceed 50 characters")
         if category is None or category == "":
             raise ValueError("Category cannot be empty")
-        if category not in CATEGORIES:
-            raise ValueError(f"Invalid category: {category}")
         if len(subcategory) > 50:
             raise ValueError("Subcategory cannot exceed 50 characters")
         
