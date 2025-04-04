@@ -1,7 +1,11 @@
-import os
 import pytest
-from sqlalchemy.orm import Session
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.db
+]
 
+import os
+from sqlalchemy.orm import Session
 from app.config import APP_CFG
 from app.db.database import get_engine, init_db
 from app.db.models.setting import Setting

@@ -1,7 +1,9 @@
 import pytest
+pytestmark = [
+    pytest.mark.api,
+    pytest.mark.api_index
+]
 
-@pytest.mark.api
-@pytest.mark.api_index
 class TestAPIIndex:
     def test_get_index_init_message(self, client, api_prefix):
         response = client.get(f"{api_prefix}/get-init-message")
@@ -32,8 +34,6 @@ class TestAPIIndex:
         assert response_dict["TABLES_COUNT"] == 1
         assert response_dict["HAS_DATA"] == True
 
-@pytest.mark.api
-@pytest.mark.api_index
 def test_get_index_db_config_with_no_db(client_without_db, api_prefix):
     response = client_without_db.get(f"{api_prefix}/get-db-config")
     response_dict = response.json()

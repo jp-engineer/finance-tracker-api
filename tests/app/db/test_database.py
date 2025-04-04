@@ -1,5 +1,10 @@
-import os
 import pytest
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.db
+]
+
+import os
 from app.config import APP_CFG
 from app.db.models.setting import Setting
 from app.db.database import (
@@ -90,7 +95,6 @@ def test_load_db_config_rejects_invalid_keys(monkeypatch):
     
     with pytest.raises(Exception):
         load_db_config(DEFAULTS_SETTINGS_PATH, invalid_user_settings_path)
-
 
 def test_check_for_db_reset_deletes_db(monkeypatch, tmp_path):
     test_db_path = tmp_path / "todelete.db"

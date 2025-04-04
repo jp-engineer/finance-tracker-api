@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from app.db.database import get_engine
 from app.db.models.setting import Setting
+from app.db.database import get_engine
 
 def put_all_settings_to_db(settings: dict) -> None:
     engine = get_engine()

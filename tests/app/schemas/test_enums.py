@@ -1,19 +1,20 @@
 import pytest
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.schemas
+]
 from app.schemas.enums import SettingCategoryEnum, FolioCategoryEnum
 
-@pytest.mark.unit
 def test_setting_category_enum_members():
     assert SettingCategoryEnum.general.value == "general"
     assert SettingCategoryEnum.view.value == "view"
     assert SettingCategoryEnum.developer.value == "developer"
     assert len(SettingCategoryEnum) == 3
 
-@pytest.mark.unit
 def test_folio_category_enum_values_are_strings():
     for enum_member in FolioCategoryEnum:
         assert isinstance(enum_member.value, str)
 
-@pytest.mark.unit
 def test_folio_category_enum_sample_values():
     assert FolioCategoryEnum.shopping.value == "Shopping"
     assert FolioCategoryEnum.bills_utilities.value == "Bills & Utilities"

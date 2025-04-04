@@ -1,8 +1,12 @@
 import pytest
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.schemas
+]
+
 from pydantic import ValidationError
 from app.schemas.setting import SettingCreate
 from app.schemas.enums import SettingCategoryEnum
-
 
 class TestSettingBase:
     def test_validate_combination_valid_country_code(self):

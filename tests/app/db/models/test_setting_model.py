@@ -3,8 +3,10 @@ from pydantic import ValidationError
 from app.schemas.setting import SettingCreate
 from app.schemas.enums import SettingCategoryEnum
 
-
-class TestSettingsBase:
+@pytest.mark.unit
+@pytest.mark.db
+@pytest.mark.models
+class TestSettingClass:
     def test_setting_create_valid_data(self):
         setting = SettingCreate(
             key="currency",

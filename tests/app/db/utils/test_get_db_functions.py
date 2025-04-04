@@ -1,5 +1,10 @@
-import os
 import pytest
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.db
+]
+
+import os
 from sqlalchemy.orm import Session
 
 from app.config import APP_CFG
