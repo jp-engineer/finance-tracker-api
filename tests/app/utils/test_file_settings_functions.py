@@ -19,7 +19,7 @@ def test_update_all_user_settings_invalid_setting_enum_category():
     assert result is False
 
 def test_update_all_user_settings_invalid_setting_value_format():
-    result = validate_setting("view", "date_format", "04/04/2025")  # Not ISO-style
+    result = validate_setting("view", "date_format", "Mon/04/2025")  # Not ISO-style
     assert result is False
 
 def test_update_all_user_settings_updates_valid_settings_and_writes_file(tmp_path):
