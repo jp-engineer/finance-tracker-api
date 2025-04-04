@@ -8,6 +8,7 @@ from app.config import APP_CFG
 from app.db.models.base_class import Base
 from app.db.models.setting import Setting
 from app.schemas.setting import SettingCreate
+from app.utils.shared import read_yaml_file
 from app.utils.setup_templated_files import setup_templates
 from app.utils.file_settings_functions import update_all_user_settings
 
@@ -72,16 +73,6 @@ def seed_settings(settings_dict, engine=None):
         session.commit()
 
 def load_db_config(default_settings_path, user_settings_path):
-    def read_yaml_file(file_path):
-        logger.debug(f"Reading YAML file: {file_path}")
-        data = {}
-        if os.path.exists(file_path):
-            with open(file_path, 'r') as file:
-                data = yaml.safe_load(file)
-        else:
-            logger.warning(f"File not found: {file_path}. Using empty configuration.")
-        return data
-
     user_data_dict = read_yaml_file(user_settings_path)
     default_data_dict = read_yaml_file(default_settings_path)
 
@@ -92,7 +83,7 @@ def load_db_config(default_settings_path, user_settings_path):
                     del user_data_dict[category][key]
                     logger.debug(f"Removed empty value for {category}.{key}")
 
-    merged_data_dict = {**default_data_dict, **user_data_dict}
+    merged_data_dict = {**user_data_dict, **default_data_dict}
     logger.debug(f"Merged settings: {merged_data_dict}")
 
     if merged_data_dict['developer']['start_date'] is None:
@@ -125,13 +116,3 @@ def setup_db():
     if APP_CFG['MODE'] == "e2e_test":
         logger.info("Setting up e2e test database.")
         pass
-
-    # # remove and use test fixtures instead
-    # if APP_CFG['MODE'] == "test":
-    #     logger.info("Setting up test database.")
-    #     setup_templates(TEMPLATE_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
-    #     init_db()
-
-    #     db_settings = load_db_config(DEFAULTS_SETTINGS_PATH, TEST_USER_SETTINGS_PATH)
-    #     seed_settings(db_settings)
-    #     update_all_user_settings(TEST_USER_SETTINGS_PATH, db_settings)
