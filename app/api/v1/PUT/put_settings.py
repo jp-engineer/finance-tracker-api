@@ -36,7 +36,6 @@ def put_general_setting(request: SettingGeneralUpdate, category="general") -> AP
             "value": request.value
         })
         normalized_value = validated.value
-
     except ValidationError as e:
         raise ValueError(f"Validation error: {e}")
     
