@@ -7,6 +7,12 @@ from app.config import APP_CFG
 import logging
 logger = logging.getLogger(__name__)
 
+def check_e2e_mode() -> bool:
+    if APP_CFG["MODE"] == "e2e_testing":
+        return True
+    else:
+        return False
+
 def read_yaml_file(file_path: str) -> dict:
     logger.debug(f"Reading YAML file: {file_path}")
     data = {}

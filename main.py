@@ -15,6 +15,7 @@ from fastapi import FastAPI, APIRouter
 from app.config import APP_CFG
 from app.api.v1.GET import get_index as v1_get_index
 from app.api.v1.GET import get_settings as v1_get_settings
+from app.api.v1.GET import get_e2e_testing as v1_get_e2e_testing
 from app.api.v1.PUT import put_settings as v1_put_settings
 
 from app.core.setup_user_settings import setup_user_settings_file
@@ -36,13 +37,13 @@ api_v1 = APIRouter(prefix=f"/api/{APP_CFG['API_VERSION']}")
 api_v1.include_router(v1_get_index.router)
 api_v1.include_router(v1_get_settings.router)
 api_v1.include_router(v1_put_settings.router)
-
+api_v1.include_router(v1_get_e2e_testing.router)
     # if APP_CFG.get("MODE") == "e2e_testing":
-    #     from app.api.v1.routes.GET import get_e2e_testing as v1_get_e2e_testing
+    #     
     #     from app.api.v1.routes.POST import post_e2e_testing as v1_post_e2e_testing
     #     from app.api.v1.routes.DELETE import delete_e2e_testing as v1_delete_e2e_testing
 
-    #     api_v1.include_router(v1_get_e2e_testing.router)
+    #     
     #     api_v1.include_router(v1_post_e2e_testing.router)
     #     api_v1.include_router(v1_delete_e2e_testing.router)
 
