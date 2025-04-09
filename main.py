@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 from fastapi import FastAPI, APIRouter
 from app.config import APP_CFG
 from app.api.v1.GET import get_index as v1_get_index
+from app.api.v1.GET import get_settings as v1_get_settings
 
 from app.core.setup_user_settings import setup_user_settings_file
 from app.db.utils.delete_db import check_for_db_reset
@@ -31,11 +32,10 @@ app = FastAPI(
 
 api_v1 = APIRouter(prefix=f"/api/{APP_CFG['API_VERSION']}")
 
-    # from app.api.v1.routes.GET import get_settings as v1_get_settings
     # from app.api.v1.routes.PUT import put_settings as v1_put_settings
 
 api_v1.include_router(v1_get_index.router)
-    # api_v1.include_router(v1_get_settings.router)
+api_v1.include_router(v1_get_settings.router)
     # api_v1.include_router(v1_put_settings.router)
 
     # if APP_CFG.get("MODE") == "e2e_testing":
