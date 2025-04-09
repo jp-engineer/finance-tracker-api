@@ -15,10 +15,9 @@ from fastapi import FastAPI, APIRouter
 from app.config import APP_CFG
 from app.api.v1.GET import get_index as v1_get_index
 
-    # if config:
-    #     APP_CFG.update(config)
+from app.core.setup_user_settings import setup_user_settings_file
 
-    # setup_user_settings_file()
+setup_user_settings_file()
     # check_for_db_reset()
     # setup_database()
 

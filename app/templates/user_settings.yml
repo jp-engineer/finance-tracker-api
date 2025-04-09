@@ -1,0 +1,13 @@
+---
+general:
+  country_code: null # Must be 2-letter ISO code
+  default_currency: null # Default currency code, accepts 3-letter ISO code
+  default_currency_symbol: null # Default currency symbol, accepts any string
+
+view:
+  user_name: null # Name of the user
+  week_starts_on: null # Calendar week starts on this day, accepts any day name or abbreviation
+  date_format: null # Date format, accepts: dd-mm-yyyy, mm-dd-yyyy, yyyy-mm-dd
+
+developer:
+  start_date: null # Must be in the format yyyy-mm-dd, should not be changed unless required

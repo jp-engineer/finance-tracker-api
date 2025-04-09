@@ -1,0 +1,13 @@
+---
+general:
+  country_code: "gb"
+  default_currency: "gbp"
+  default_currency_symbol: "£"
+
+view:
+  user_name: pal 
+  week_starts_on: "monday"
+  date_format: "yyyy-mm-dd"
+
+developer:
+  start_date: null
