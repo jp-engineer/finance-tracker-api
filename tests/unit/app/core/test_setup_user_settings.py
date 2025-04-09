@@ -4,8 +4,8 @@ import yaml
 from app.config import APP_CFG
 
 from app.core.setup_user_settings import (
-    # validate_setting,
-    # update_all_user_settings_in_file,
+    validate_setting,
+    update_all_user_settings_in_file,
     setup_user_settings_file
 )
 
@@ -29,38 +29,47 @@ def backup_and_restore_settings_file():
     if os.path.exists(backup_file):
         os.rename(backup_file, settings_file)
 
-# # needs updating once validate functoin is updated to use schema
-# @pytest.mark.parametrize("category, key, value, expected", [
-#     ("general", "currency", "USD", True),
-#     ("developer", "start_date", "2024-01-01", True),
-#     ("invalid_category", "currency", "USD", False),
-#     ("general", "currency", None, False)
-# ])
-# def test_validate_setting(category, key, value, expected):
-#     result = validate_setting(category, key, value)
-#     assert result == expected
+def test_validate_setting_w_lowercase_currency():
+    result = validate_setting("general", "default_currency", "eur")
+    assert result == True
 
-# def test_update_all_user_settings_in_file_valid(monkeypatch, tmp_path):
-#     settings_file = tmp_path / "user_settings.yml"
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(settings_file))
+def test_validate_setting_w_uppercase_currency():
+    result = validate_setting("general", "default_currency", "EUR")
+    assert result == True
 
-#     mock_settings = {"general": {"currency": "EUR"}}
-#     update_all_user_settings_in_file(mock_settings)
+def test_validate_setting_w_invalid_category():
+    with pytest.raises(ValueError):
+        validate_setting("invalid_category", "key", "value")
 
-#     with open(settings_file, encoding="utf-8") as f:
-#         loaded = yaml.safe_load(f)
+def test_validate_setting_w_invalid_key():
+    with pytest.raises(ValueError):
+        validate_setting("general", "invalid_key", "value")
 
-#     assert loaded["general"]["currency"] == "EUR"
+def test_validate_setting_w_invalid_value():
+    with pytest.raises(ValueError):
+        validate_setting("general", "default_currency", 123)
 
-# def test_update_all_user_settings_in_file_invalid_key_raises():
-#     mock_settings = {
-#         "general": {"country_code": "US"},
-#         "developer": {"start_date": "not-a-date"},
-#         "invalid": {"key": "bad"}
-#     }
+def test_update_all_user_settings_in_file_valid(monkeypatch, tmp_path):
+    settings_file = tmp_path / "user_settings.yml"
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(settings_file))
 
-#     with pytest.raises(ValueError):
-#         update_all_user_settings_in_file(mock_settings)
+    mock_settings = {"general": {"default_currency": "EUR"}}
+    update_all_user_settings_in_file(mock_settings)
+
+    with open(settings_file, encoding="utf-8") as f:
+        loaded = yaml.safe_load(f)
+
+    assert loaded["general"]["default_currency"] == "EUR"
+
+def test_update_all_user_settings_in_file_invalid_key_raises():
+    mock_settings = {
+        "general": {"country_code": "US"},
+        "developer": {"start_date": "not-a-date"},
+        "invalid": {"key": "bad"}
+    }
+
+    with pytest.raises(ValueError):
+        update_all_user_settings_in_file(mock_settings)
 
 def test_setup_user_settings_file_creates_user_settings_file(monkeypatch, tmp_path):
     template_dir = tmp_path / "template_dir"
