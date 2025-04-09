@@ -1,0 +1,53 @@
+{
+  "AccountAll": [
+    {"id": 1, "reference": "Credit Card", "currency": "GBP", "starting_balance": -500.0, "active": true, "account_type": "credit"},
+    {"id": 2, "reference": "Checking Account", "currency": "GBP", "starting_balance": 1500.0, "active": true, "account_type": "debit"},
+    {"id": 3, "reference": "Cash Wallet", "currency": "GBP", "starting_balance": 100.0, "active": true, "account_type": "independent"}
+  ],
+  "AccountCredit": [
+    {"id": 1, "account_id": 1, "credit_limit": 2000.0, "interest_rate": 19.9, "minimum_payment_pct": 5.0, "due_date": 25}
+  ],
+  "AccountDebit": [
+    {"id": 1, "account_id": 2, "overdraft_limit": 500.0, "interest_rate": 15.5}
+  ],
+  "AccountIndependent": [
+    {"id": 1, "account_id": 3}
+  ],
+  "Folio": [
+    {"id": 1, "name": "Amazon", "category": "Shopping", "subcategory": "Online Retail"},
+    {"id": 2, "name": "Electricity Provider", "category": "Bills & Utilities", "subcategory": "Electricity"}
+  ],
+  "RecurringTransaction": [
+    {"id": 1, "transaction_type": "expense", "amount": 35.0, "description": "Monthly Internet", "variable": false, "estimate": null, "expires": false, "expires_after": null, "expires_on": null, "ignores_bank_holidays": true, "ignores_weekends": false, "pays_early": false, "freq_per_month": 1, "month_payment_dates": "15", "folio_id": 2, "from_account_id": 2},
+    {"id": 2, "transaction_type": "payment", "amount": 2500.0, "description": "Monthly Salary", "variable": false, "estimate": null, "expires": false, "freq_per_month": 1, "month_payment_dates": "28", "folio_id": null, "to_account_id": 2}
+  ],
+  "ScheduledTransaction": [
+    {"id": 1, "transaction_type": "expense", "recurring_transaction_id": 1, "amount": 35.0, "description": "Monthly Internet - April", "scheduled_date": "2025-04-15", "pending": true, "folio_id": 2, "from_account_id": 2}
+  ],
+  "SettingGeneral": [
+    {"id": 1, "key": "country_code", "value": "GB"},
+    {"id": 2, "key": "default_currency", "value": "GBP"},
+    {"id": 3, "key": "default_currency_symbol", "value": "£"}
+  ],
+  "SettingDeveloper": [
+    {"id": 1, "key": "start_date", "value": "2025-04-06"}
+  ],
+  "SettingView": [
+    {"id": 1, "key": "user_name", "value": "Pal"},
+    {"id": 2, "key": "week_starts_on", "value": "Monday"},
+    {"id": 3, "key": "date_format", "value": "YYYY-MM-DD"}
+  ],
+  "TransactionAll": [
+    {"id": 1, "amount": 59.99, "date": "2025-04-05", "description": "Amazon Order", "transaction_type": "expense", "paid": true, "recurring_transaction_id": null},
+    {"id": 2, "amount": 2500.0, "date": "2025-03-28", "description": "Salary March", "transaction_type": "payment", "paid": true, "recurring_transaction_id": 2}
+  ],
+  "TransactionExpense": [
+    {"id": 1, "transaction_id": 1, "from_account_id": 2, "folio_id": 1}
+  ],
+  "TransactionPayment": [
+    {"id": 1, "transaction_id": 2, "to_account_id": 2, "folio_id": 1}
+  ],
+  "TransactionTransfer": [
+    {"id": 1, "transaction_id": 3, "from_account_id": 2, "to_account_id": 3}
+  ]
+}
