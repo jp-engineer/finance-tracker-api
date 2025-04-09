@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.schemas.api_response import APIResponse
+from finance_tracker_shared.schemas import APIResponse
 # from app.config import APP_CFG
 # from app.core.read_app_db_cfg import get_db_cfg_dict
 
