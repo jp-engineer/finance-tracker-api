@@ -3,7 +3,7 @@ from datetime import date
 import yaml
 from pydantic import ValidationError
 from app.config import APP_CFG
-from finance_tracker_shared.schemas import SettingBase
+from finance_tracker_shared.schemas import SettingGeneralBase
 
 import logging
 logger = logging.getLogger(__name__)
