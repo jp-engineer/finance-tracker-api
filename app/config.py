@@ -83,8 +83,7 @@ if MODE == "e2e_testing":
         SETTINGS_FILE = settings_file_str
 
 else:
-    db_path = os.path.join("app", "db", DB_FILENAME)
-    DB_PATH = os.environ.get("DB_PATH", db_path)
+    DB_PATH = os.environ.get("DB_PATH", os.path.join("app", "db", DB_FILENAME))
     SEED_DIR = os.path.join("app", "db", "seed")
     
     if MODE == "dev":
