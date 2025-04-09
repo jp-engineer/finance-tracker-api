@@ -71,27 +71,13 @@ def test_update_all_user_settings_in_file_invalid_key_raises():
     with pytest.raises(ValueError):
         update_all_user_settings_in_file(mock_settings)
 
-# update to expect default settings to be loaded
-# def test_setup_user_settings_file_creates_user_settings_file(monkeypatch, tmp_path):
-#     template_dir = tmp_path / "template_dir"
-#     template_dir.mkdir()
+def test_setup_user_settings_file_creates_user_settings_file(monkeypatch, tmp_path):
+    user_settings_file = tmp_path / "user_settings.yml"
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_file))
 
-#     template_file = template_dir / "user_settings.yml"
-#     template_content = {"general": {"default_currency": "EUR"}}
-#     with open(template_file, "w") as f:
-#         yaml.dump(template_content, f)
+    setup_user_settings_file()
 
-#     user_settings_file = tmp_path / "user_settings.yml"
-
-#     monkeypatch.setitem(APP_CFG, "TEMPLATE_SETTINGS_DIR", str(template_dir))
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_file))
-
-#     setup_user_settings_file()
-
-#     assert user_settings_file.exists()
-#     with open(user_settings_file, "r") as f:
-#         loaded = yaml.safe_load(f)
-#     assert loaded == template_content
+    assert user_settings_file.exists()
 
 def test_setup_user_settings_file_raises_error_if_template_missing(monkeypatch, tmp_path):
     monkeypatch.setitem(APP_CFG, "TEMPLATE_SETTINGS_DIR", str(tmp_path))
@@ -100,26 +86,16 @@ def test_setup_user_settings_file_raises_error_if_template_missing(monkeypatch, 
     with pytest.raises(FileNotFoundError):
         setup_user_settings_file()
 
-# update to expect default settings to be loaded
-# def test_setup_user_settings_file_does_nothing_if_file_exists(monkeypatch, tmp_path):
-#     template_dir = tmp_path / "template"
-#     template_dir.mkdir()
+def test_setup_user_settings_file_doesnt_override_existing_values(monkeypatch, tmp_path):
+    user_settings_file = tmp_path / "user_settings.yml"
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_file))
 
-#     user_settings_file = tmp_path / "user_settings.yml"
-#     template_file = template_dir / "user_settings.yml"
+    original_content = {"general": {"country_code": "US"}}
+    with open(user_settings_file, "w") as f:
+        yaml.dump(original_content, f)
 
-#     monkeypatch.setitem(APP_CFG, "TEMPLATE_SETTINGS_DIR", str(template_dir))
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_file))
+    setup_user_settings_file()
 
-#     original_content = {"preserve": True}
-#     with open(user_settings_file, "w") as f:
-#         yaml.dump(original_content, f)
-
-#     with open(template_file, "w") as f:
-#         yaml.dump({"should_not_overwrite": True}, f)
-
-#     setup_user_settings_file()
-
-#     with open(user_settings_file, "r") as f:
-#         result = yaml.safe_load(f)
-#     assert result == original_content
+    with open(user_settings_file, "r") as f:
+        result = yaml.safe_load(f)
+    assert result['general']['country_code'] == "US"
