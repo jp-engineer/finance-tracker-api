@@ -52,6 +52,26 @@
         "DELETE_DB": "true",
         "DB_SEED_FILE": "sample"
       }
+    },
+    {
+      "name": "FastAPI - e2e with db reseed",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "main:app",
+        "--reload",
+        "--port",
+        "8000"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true,
+      "env": {
+        "MODE": "e2e_testing",
+        "DELETE_DB": "true",
+        "DB_SEED_FILE": "sample"
+      }
     }
   ]
 }
