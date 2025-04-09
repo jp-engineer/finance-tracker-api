@@ -27,6 +27,11 @@ def read_json_file(file_path: str) -> dict:
         logger.warning(f"File not found: {file_path}. Returning empty dictionary.")
     return data
 
+def write_yaml_file(file_path: str, data: dict) -> None:
+    logger.debug(f"Writing YAML file: {file_path} with data: {data}")
+    with open(file_path, 'w', encoding='utf-8') as file:
+        yaml.safe_dump(data, file, default_flow_style=False, allow_unicode=True)
+
 def load_settings_dict() -> dict:
     def deep_merge_dicts(defaults: dict, overrides: dict) -> dict:
         logger.debug(f"Deep merging dictionaries: {defaults} with {overrides}")

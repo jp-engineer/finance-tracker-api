@@ -21,15 +21,15 @@ def get_all_settings_from_db_by_category() -> dict:
 
     for setting in general_settings:
         setting_dict = SettingGeneralRead.model_validate(setting).model_dump()
-        results_dict['general'][setting.key] = setting_dict
+        results_dict['general'][setting.id] = setting_dict
 
     for setting in developer_settings:
         setting_dict = SettingDeveloperRead.model_validate(setting).model_dump()
-        results_dict['developer'][setting.key] = setting_dict
+        results_dict['developer'][setting.id] = setting_dict
     
     for setting in view_settings:
         setting_dict = SettingViewRead.model_validate(setting).model_dump()
-        results_dict['view'][setting.key] = setting_dict
+        results_dict['view'][setting.id] = setting_dict
     
     return results_dict
 
