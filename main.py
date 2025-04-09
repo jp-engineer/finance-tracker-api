@@ -17,10 +17,11 @@ from app.api.v1.GET import get_index as v1_get_index
 
 from app.core.setup_user_settings import setup_user_settings_file
 from app.db.utils.delete_db import check_for_db_reset
+from app.db.utils.setup_db import setup_database
 
 setup_user_settings_file()
 check_for_db_reset()
-    # setup_database()
+setup_database()
 
 
 app = FastAPI(
