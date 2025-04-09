@@ -33,6 +33,25 @@
       "env": {
         "DELETE_DB": "true"
       }
+    },
+    {
+      "name": "FastAPI - prod with db reseed",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "args": [
+        "main:app",
+        "--reload",
+        "--port",
+        "8000"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": true,
+      "env": {
+        "DELETE_DB": "true",
+        "DB_SEED_FILE": "sample"
+      }
     }
   ]
 }
