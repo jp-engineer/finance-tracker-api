@@ -112,26 +112,26 @@
 #     with pytest.raises(ValueError):
 #         seed_db_with_data({"InvalidModel": [{"key": "key", "value": "value", "category": "general"}]}, db_without_data)
 
-# def test_load_settings_dict_validates_user_settings(temp_user_settings_path, monkeypatch):
+# def test_load_user_settings_dict_validates_user_settings(temp_user_settings_path, monkeypatch):
 #     settings_dict = {"developer": {"test_key": "test_value"}}
 #     with open(temp_user_settings_path, "w", encoding="utf-8") as f:
 #         yaml.dump(settings_dict, f)
 #     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
 
 #     with pytest.raises(ValueError):
-#         load_settings_dict()
+#         load_user_settings_dict()
 
-# def test_load_settings_dict_overrides_default_settings(temp_user_settings_path, monkeypatch):
+# def test_load_user_settings_dict_overrides_default_settings(temp_user_settings_path, monkeypatch):
 #     settings_dict = {"view": {"default_currency": "USD"}}
 #     with open(temp_user_settings_path, "w", encoding="utf-8") as f:
 #         yaml.dump(settings_dict, f)
 #     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
 
-#     returned_dict = load_settings_dict()
+#     returned_dict = load_user_settings_dict()
 
 #     assert returned_dict["view"]["default_currency"] == "USD"
 
-# def test_load_settings_dict_sets_empty_start_date_to_today(temp_user_settings_path, monkeypatch):
+# def test_load_user_settings_dict_sets_empty_start_date_to_today(temp_user_settings_path, monkeypatch):
 #     settings_dict = {
 #         "developer": {"start_date": None},
 #         "view": {"default_currency": "USD"}
@@ -140,11 +140,11 @@
 #         yaml.dump(settings_dict, f)
 #     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
 
-#     result = load_settings_dict()
+#     result = load_user_settings_dict()
 
 #     assert result["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
 
-# def test_load_settings_dict_sets_empty_values_to_default(temp_user_settings_path, monkeypatch):
+# def test_load_user_settings_dict_sets_empty_values_to_default(temp_user_settings_path, monkeypatch):
 #     settings_dict = {
 #         "developer": {"start_date": None},
 #         "general": {"currency": None}
@@ -153,7 +153,7 @@
 #         yaml.dump(settings_dict, f)
 #     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
 
-#     result = load_settings_dict()
+#     result = load_user_settings_dict()
 
 #     assert result["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
 #     assert result["view"]["default_currency"] == "gbp"

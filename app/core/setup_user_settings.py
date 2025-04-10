@@ -4,7 +4,7 @@ import yaml
 from pydantic import ValidationError
 from app.config import APP_CFG
 from finance_tracker_shared.schemas import SettingGeneralBase, SettingDeveloperBase, SettingViewBase
-from app.core.helpers import load_settings_dict
+from app.core.helpers import load_user_settings_dict
 
 import logging
 logger = logging.getLogger(__name__)
@@ -76,5 +76,5 @@ def setup_user_settings_file() -> None:
 
     setup_user_settings_from_template()
 
-    user_settings_dict = load_settings_dict()
+    user_settings_dict = load_user_settings_dict()
     update_all_user_settings_in_file(user_settings_dict)
