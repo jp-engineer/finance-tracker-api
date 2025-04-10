@@ -55,9 +55,10 @@ def update_all_user_settings_in_file(settings: dict = None) -> dict:
             if value is None and key == "start_date":
                 value = date.today().strftime("%Y-%m-%d")
                 logger.debug(f"Setting default value for {category}.{key} to {value}")
+            
             if not validate_setting(category, key, value):
                 raise ValueError(f"Invalid setting: {category}.{key} = {value}")
-
+    
     logger.debug(f"Updating settings file: {APP_CFG["SETTINGS_FILE"]} with settings: {settings}")
     with open(APP_CFG["SETTINGS_FILE"],  "w", encoding='utf-8') as file:
         yaml.dump(settings, file, default_flow_style=False, allow_unicode=True)
