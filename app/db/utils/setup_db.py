@@ -8,9 +8,9 @@ import finance_tracker_shared.schemas as schemas
 
 import app.db.models as models
 from app.db.database import get_engine
-from app.core.setup_user_settings import update_all_user_settings_in_file
-from app.core.helpers import read_json_file, load_user_settings_dict, check_settings_dict_for_missing_keys
 from app.db.utils.delete_db import check_for_db_reset
+from app.core.helpers import read_json_file, load_user_settings_dict, check_settings_dict_for_missing_keys
+from app.core.setup_user_settings import update_all_user_settings_in_file
 from app.config import APP_CFG
 
 
@@ -36,7 +36,7 @@ def setup_database() -> None:
             settings_dict = load_user_settings_dict()
             seed_setting_tables(settings_dict)
             update_all_user_settings_in_file(settings_dict)
-            
+
     logger.info(f"Database initialized at {APP_CFG['DB_PATH']}")
 
 
