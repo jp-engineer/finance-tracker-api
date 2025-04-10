@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/", response_model=APIResponse)
-def get_index_init_message():
+def get_index_message():
     logger.info("GET /")
     response = {
         "message": "finance-tracker API is running"
