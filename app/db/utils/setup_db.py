@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 def setup_database() -> None:
     check_for_db_reset()
+
     new_db = init_db()
     if new_db:
         if APP_CFG["DB_SEED_FILE"]:
@@ -42,9 +43,11 @@ def setup_database() -> None:
 
 def init_db(engine: object=None) -> None:
     new_db = False
+
     if engine is None:
         engine = get_engine()
         dispose_after = True
+
     else:
         dispose_after = False
 
@@ -65,15 +68,12 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
             if model == "ScheduledTransaction":
                 for entry in model_data:
                     if "scheduled_date" in entry:
-                        entry["scheduled_date"] = datetime.strptime(
-                            entry["scheduled_date"], "%Y-%m-%d"
-                        ).date()
+                        entry["scheduled_date"] = datetime.strptime(entry["scheduled_date"], "%Y-%m-%d").date()
+
             elif model == "TransactionAll":
                 for entry in model_data:
                     if "date" in entry:
-                        entry["date"] = datetime.strptime(
-                            entry["date"], "%Y-%m-%d"
-                        ).date()
+                        entry["date"] = datetime.strptime(entry["date"], "%Y-%m-%d").date()
 
         return data_dict
     
@@ -82,9 +82,11 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
     settings_general_list = data_dict.get("SettingGeneral", [])
     for setting in settings_general_list:
         settings_input_dict["general"][setting["key"]] = setting["value"]
+
     settings_developer_list = data_dict.get("SettingDeveloper", [])
     for setting in settings_developer_list:
         settings_input_dict["developer"][setting["key"]] = setting["value"]
+
     settings_view_list = data_dict.get("SettingView", [])
     for setting in settings_view_list:
         settings_input_dict["view"][setting["key"]] = setting["value"]
@@ -110,6 +112,7 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
     with Session(engine) as session:
         for model_name, model_data in data_dict_converted.items():
             model_class = getattr(models, model_name, None)
+
             if model_class is None:
                 raise ValueError(f"Model {model_name} not found in app.db.models")
 
@@ -168,9 +171,9 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
                     if not existing:
                         db_model = model_class(**validated.model_dump())
                         session.add(db_model)
+
                 except Exception as e:
                     raise ValueError(f"Error inserting {model_name} with data {validated}: {e}")
-
 
         session.commit()
         engine.dispose()
@@ -192,10 +195,12 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
                     try:
                         validated = schemas.SettingGeneralCreate(key=key, value=value)
                         existing = session.query(models.SettingGeneral).filter_by(key=key).first()
+                        
                         if not existing:
                             db_setting = models.SettingGeneral(**validated.model_dump())
                             session.add(db_setting)
                             logger.debug(f"Inserted: {key} with value: {value} in category: {category}")
+                    
                     except ValidationError as e:
                         raise ValueError(f"Error inserting {key} in category {category}: {e}")
             
@@ -208,10 +213,12 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
 
                         validated = schemas.SettingDeveloperCreate(key=key, value=value)
                         existing = session.query(models.SettingDeveloper).filter_by(key=key).first()
+                        
                         if not existing:
                             db_setting = models.SettingDeveloper(**validated.model_dump())
                             session.add(db_setting)
                             logger.debug(f"Inserted: {key} with value: {value} in category: {category}")
+                   
                     except ValidationError as e:
                         raise ValueError(f"Error inserting {key} in category {category}: {e}")
  
@@ -220,10 +227,12 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
                     try:
                         validated = schemas.SettingViewCreate(key=key, value=value)
                         existing = session.query(models.SettingView).filter_by(key=key).first()
+                        
                         if not existing:
                             db_setting = models.SettingView(**validated.model_dump())
                             session.add(db_setting)
                             logger.debug(f"Inserted: {key} with value: {value} in category: {category}")
+                    
                     except ValidationError as e:
                         raise ValueError(f"Error inserting {key} in category {category}: {e}")
 
