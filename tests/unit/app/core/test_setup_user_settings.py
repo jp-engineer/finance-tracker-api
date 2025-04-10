@@ -14,40 +14,21 @@ pytestmark = [
     pytest.mark.core
 ]
 
-@pytest.fixture
-def backup_and_restore_settings_file():
-    settings_file = APP_CFG["SETTINGS_FILE"]
-    backup_file = settings_file + ".bak"
+@pytest.mark.parametrize("category,key,value", [
+    ("general", "default_currency", "eur"),
+    ("general", "default_currency", "EUR")
+])
+def test_validate_setting_valid(category, key, value):
+    assert validate_setting(category, key, value) is True
 
-    if os.path.exists(settings_file):
-        os.rename(settings_file, backup_file)
-
-    yield
-
-    if os.path.exists(settings_file):
-        os.remove(settings_file)
-    if os.path.exists(backup_file):
-        os.rename(backup_file, settings_file)
-
-def test_validate_setting_w_lowercase_currency():
-    result = validate_setting("general", "default_currency", "eur")
-    assert result == True
-
-def test_validate_setting_w_uppercase_currency():
-    result = validate_setting("general", "default_currency", "EUR")
-    assert result == True
-
-def test_validate_setting_w_invalid_category():
+@pytest.mark.parametrize("category,key,value", [
+    ("invalid_category", "key", "value"),
+    ("general", "invalid_key", "value"),
+    ("general", "default_currency", 123),
+])
+def test_validate_setting_invalid(category, key, value):
     with pytest.raises(ValueError):
-        validate_setting("invalid_category", "key", "value")
-
-def test_validate_setting_w_invalid_key():
-    with pytest.raises(ValueError):
-        validate_setting("general", "invalid_key", "value")
-
-def test_validate_setting_w_invalid_value():
-    with pytest.raises(ValueError):
-        validate_setting("general", "default_currency", 123)
+        validate_setting(category, key, value)
 
 def test_update_all_user_settings_in_file_valid(monkeypatch, tmp_path):
     settings_file = tmp_path / "user_settings.yml"
