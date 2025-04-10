@@ -1,0 +1,24 @@
+{
+    "GET": [
+        "/api/v1/",
+        "/api/v1/app/get-config",
+        "/api/v1/db/get-config",
+        "/api/v1/settings/get-all-settings",
+        "/api/v1/settings/{category}/get-setting-by-key/{key}",
+        "/api/v1/e2e-testing/"
+    ],
+    "PUT": [
+        "/api/v1/settings/put-all-settings",
+        "/api/v1/settings/general/put-setting",
+        "/api/v1/settings/developer/put-setting",
+        "/api/v1/settings/view/put-setting"
+    ],
+    "DELETE": [
+        "/api/v1/e2e-testing/db/delete-test-db"
+    ],
+    "POST": [
+        "/api/v1/e2e-testing/db/post-init-db",
+        "/api/v1/e2e-testing/db/post-seed-settings",
+        "/api/v1/e2e-testing/db/post-seed-test-data"
+    ]
+}
