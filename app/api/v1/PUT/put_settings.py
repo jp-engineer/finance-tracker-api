@@ -48,7 +48,7 @@ def put_developer_setting(request: SettingDeveloperUpdate, category="developer")
     logger.info(f"PUT /settings/{category}/put-setting")
 
     try:
-        validated = SettingGeneralUpdate.model_validate({
+        validated = SettingDeveloperUpdate.model_validate({
             "key": request.key,
             "value": request.value
         })
@@ -66,7 +66,7 @@ def put_view_setting(request: SettingViewUpdate, category="view") -> APIResponse
     logger.info(f"PUT /settings/{category}/put-setting")
 
     try:
-        validated = SettingGeneralUpdate.model_validate({
+        validated = SettingViewUpdate.model_validate({
             "key": request.key,
             "value": request.value
         })
