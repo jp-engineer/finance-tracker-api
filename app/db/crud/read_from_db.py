@@ -62,7 +62,7 @@ def get_setting_by_category_and_key_from_db(category: str, key: str) -> dict:
             raise ValueError(f"Error retrieving setting: {e}")
         
         logging.debug(f"Retrieved setting: {setting_dict}")
-        
+
     engine.dispose()
 
     return setting_dict
