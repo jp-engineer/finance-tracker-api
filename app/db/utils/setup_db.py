@@ -7,12 +7,22 @@ from app.config import APP_CFG
 import app.db.models as models
 from app.db.database import get_engine
 from app.core.setup_user_settings import update_all_user_settings_in_file
-from app.core.helpers import read_json_file, load_settings_dict
+from app.core.helpers import read_json_file, load_user_settings_dict, SETTINGS_DICT
+from app.db.utils.delete_db import check_for_db_reset
 
 import logging
 logger = logging.getLogger(__name__)
 
+def check_settings_dict_for_missing_keys(input_settings_dict: dict) -> None:
+    for category, setting_list in SETTINGS_DICT.items():
+        for setting in setting_list:
+            if category not in input_settings_dict:
+                raise ValueError(f"Missing category: {category} in settings dictionary.")
+            if setting not in input_settings_dict[category]:
+                raise ValueError(f"Missing setting: {setting} in category: {category}.")        
+    
 def setup_database() -> None:
+    check_for_db_reset()
     new_db = init_db()
     if new_db:
         if APP_CFG["DB_SEED_FILE"]:
@@ -24,7 +34,7 @@ def setup_database() -> None:
 
         else:
             logger.debug("No seed file provided, seeding settings.")
-            settings_dict = load_settings_dict()
+            settings_dict = load_user_settings_dict()
             seed_setting_tables(settings_dict)
             update_all_user_settings_in_file(settings_dict)
 
@@ -50,6 +60,8 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
     if engine is None:
         engine = get_engine()
     logger.debug(f"DB at {APP_CFG['DB_PATH']} with settings: {settings_dict}")
+
+    check_settings_dict_for_missing_keys(settings_dict)
 
     with Session(engine) as session:
         for category, key_value in settings_dict.items():
@@ -121,11 +133,36 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
 
         return data_dict
     
+    settings_input_dict = {"general": {}, "developer": {}, "view": {}}
+
+    settings_general_list = data_dict.get("SettingGeneral", [])
+    for setting in settings_general_list:
+        settings_input_dict["general"][setting["key"]] = setting["value"]
+    settings_developer_list = data_dict.get("SettingDeveloper", [])
+    for setting in settings_developer_list:
+        settings_input_dict["developer"][setting["key"]] = setting["value"]
+    settings_view_list = data_dict.get("SettingView", [])
+    for setting in settings_view_list:
+        settings_input_dict["view"][setting["key"]] = setting["value"]
+    
+    check_settings_dict_for_missing_keys(settings_input_dict)
+    
     data_dict_converted = convert_date_strings_in_dict_to_date(data_dict)
     if engine is None:
         engine = get_engine()
     logger.debug(f"Seeding DB at {APP_CFG['DB_PATH']}")
 
+    setting_developer_list = data_dict_converted["SettingDeveloper"]
+    valid = True
+    for setting_dict in setting_developer_list:
+        if setting_dict.get("key") == "start_date":
+            if setting_dict.get("value") is None:
+                valid = True
+                break
+    if not valid:
+        raise ValueError("start_date is None in SettingDeveloper. Please provide a valid date.")
+
+    settings_file_dict = {"general": {}, "developer": {}, "view": {}}
     with Session(engine) as session:
         for model_name, model_data in data_dict_converted.items():
             model_class = getattr(models, model_name, None)
@@ -155,17 +192,17 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
                     elif model_name == "ScheduledTransaction":
                         validated = schemas.ScheduledTransactionCreate(**item)
                     
-                    elif model_name == "SettingDeveloper":
-                        validated = schemas.SettingDeveloperCreate(**item)
-                    
                     elif model_name == "SettingGeneral":
                         validated = schemas.SettingGeneralCreate(**item)
+                        settings_file_dict['general'][item['key']] = validated.value
                     
                     elif model_name == "SettingDeveloper":
                         validated = schemas.SettingDeveloperCreate(**item)
+                        settings_file_dict['developer'][item['key']] = validated.value
 
                     elif model_name == "SettingView":
                         validated = schemas.SettingViewCreate(**item)
+                        settings_file_dict['view'][item['key']] = validated.value
 
                     elif model_name == "TransactionAll":
                         validated = schemas.TransactionAllCreate(**item)
@@ -190,5 +227,8 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
                 except Exception as e:
                     raise ValueError(f"Error inserting {model_name} with data {validated}: {e}")
 
+
         session.commit()
         engine.dispose()
+
+    update_all_user_settings_in_file(settings_file_dict)

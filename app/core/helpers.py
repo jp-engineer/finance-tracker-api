@@ -7,6 +7,22 @@ from app.config import APP_CFG
 import logging
 logger = logging.getLogger(__name__)
 
+SETTINGS_DICT = {
+    "general": [
+        "country_code",
+        "default_currency",
+        "default_currency_symbol"
+    ],
+    "developer": [
+        "start_date"
+    ],
+    "view": [
+        "user_name",
+        "week_starts_on",
+        "date_format"
+    ]
+}
+
 def check_e2e_mode() -> bool:
     if APP_CFG["MODE"] == "e2e_testing":
         return True
@@ -38,7 +54,7 @@ def write_yaml_file(file_path: str, data: dict) -> None:
     with open(file_path, 'w', encoding='utf-8') as file:
         yaml.safe_dump(data, file, default_flow_style=False, allow_unicode=True)
 
-def load_settings_dict() -> dict:
+def load_user_settings_dict() -> dict:
     def deep_merge_dicts(defaults: dict, overrides: dict) -> dict:
         logger.debug(f"Deep merging dictionaries: {defaults} with {overrides}")
         result = {}
@@ -90,6 +106,7 @@ def load_settings_dict() -> dict:
     logger.debug(f"Merged settings: {merged_data_dict}")
 
     return merged_data_dict
+
 
 # def convert_dict_of_settings_by_category(settings_dict: dict) -> dict:
 #     logger.debug(f"Converting dictionary of settings by category: {settings_dict}")
