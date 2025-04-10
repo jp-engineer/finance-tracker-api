@@ -25,15 +25,18 @@ def setup_database() -> None:
         if APP_CFG["DB_SEED_FILE"]:
             if not os.path.exists(APP_CFG["DB_SEED_FILE"]):
                 raise FileNotFoundError(f"Seed file not found: {APP_CFG['DB_SEED_FILE']}")
+            
             logger.debug(f"Seeding database with file: {APP_CFG['DB_SEED_FILE']}")
             seed_dict = read_json_file(APP_CFG["DB_SEED_FILE"])
             seed_db_with_data(seed_dict)
 
         else:
             logger.debug("No seed file provided, seeding settings.")
+
             settings_dict = load_user_settings_dict()
             seed_setting_tables(settings_dict)
             update_all_user_settings_in_file(settings_dict)
+            
     logger.info(f"Database initialized at {APP_CFG['DB_PATH']}")
 
 
