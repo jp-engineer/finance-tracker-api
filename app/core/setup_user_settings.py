@@ -14,6 +14,7 @@ logger = logging.getLogger(__name__)
 
 SETTINGS_CATEGORIES = ["general", "developer", "view"]
 
+
 def validate_setting(category: str, key: str, value: str) -> bool:
     if category not in SETTINGS_CATEGORIES:
         raise ValueError(f"Invalid category: {category}")
