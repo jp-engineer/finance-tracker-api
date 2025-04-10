@@ -134,3 +134,12 @@ def load_user_settings_dict() -> dict:
     logger.debug(f"Merged settings: {merged_data_dict}")
 
     return merged_data_dict
+
+
+def check_settings_dict_for_missing_keys(input_settings_dict: dict) -> None:
+    for category, setting_list in SETTINGS_DICT.items():
+        for setting in setting_list:
+            if category not in input_settings_dict:
+                raise ValueError(f"Missing category: {category} in settings dictionary.")
+            if setting not in input_settings_dict[category]:
+                raise ValueError(f"Missing setting: {setting} in category: {category}.")        
