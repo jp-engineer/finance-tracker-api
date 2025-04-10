@@ -66,8 +66,8 @@ DB_SEED_FILE = os.environ.get("DB_SEED_FILE", None)
 SETTINGS_FILE = os.environ.get("SETTINGS_FILE", None)
 
 if MODE == "e2e_testing":
-    DB_PATH = os.path.join("tests", "unit", "app", "db", DB_FILENAME)
-    SEED_DIR = os.path.join("tests", "unit", "app", "db", "seed")
+    DB_PATH = os.path.join("tests", "e2e", "app", "db", DB_FILENAME)
+    SEED_DIR = os.path.join("tests", "e2e", "app", "db", "seed")
 
     if DB_SEED_FILE is None:
         DB_SEED_FILE = os.path.join(SEED_DIR, "test_seed.json")
@@ -77,12 +77,12 @@ if MODE == "e2e_testing":
         seed_file_str = validate_file(seed_file_location, "json")
 
         if seed_file_str is None:
-            logger.error(f"Invalid DB_SEED_FILE: {seed_file_location}. Exiting.")
+            logger.error(f"Invalid DB_SEED_FILE: {DB_SEED_FILE}. Exiting.")
             sys.exit(1)
         DB_SEED_FILE = seed_file_str
 
     if SETTINGS_FILE is None:
-        SETTINGS_FILE = os.path.join("tests", "unit", "app", "user", "test_user_settings.yml")
+        SETTINGS_FILE = os.path.join("tests", "e2e", "app", "user", "test_user_settings.yml")
 
     else:
         settings_file_location = os.path.join("tests", "unit", "app", "user", SETTINGS_FILE)
