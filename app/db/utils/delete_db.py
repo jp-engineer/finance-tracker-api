@@ -1,14 +1,17 @@
 import os
+
 from app.config import APP_CFG
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 def check_for_db_reset() -> None:
     delete_db_flag = os.environ.get("DELETE_DB", "false").strip().lower()
     if delete_db_flag == "true":
         logger.debug("DELETE_DB environment variable is set to true. Deleting database.")
         delete_db()
+
 
 def delete_db() -> None:
     if os.path.exists(APP_CFG['DB_PATH']):
