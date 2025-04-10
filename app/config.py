@@ -158,4 +158,3 @@ APP_CFG = {
     "DEFAULT_SETTINGS_DIR": os.path.join("app", "defaults"),
     "SETTINGS_FILE": SETTINGS_FILE
 }
-logger.debug(f"App config: {APP_CFG}")
