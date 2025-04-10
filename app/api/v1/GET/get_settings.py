@@ -1,15 +1,18 @@
 from fastapi import APIRouter
+
 from finance_tracker_shared.schemas import APIResponse
+
 from app.db.crud.read_from_db import get_all_settings_from_db_by_category, get_setting_by_category_and_key_from_db
 
 import logging
 logger = logging.getLogger(__name__)
 
+
 router = APIRouter(prefix="/settings")
+
 
 @router.get("/get-all-settings", response_model=APIResponse)
 def get_all_settings():
-    logger.info("GET /settings/get-all-settings")
     settings = get_all_settings_from_db_by_category()
     message = None
     if not settings:
@@ -25,9 +28,9 @@ def get_all_settings():
 
     return response
 
+
 @router.get("/{category}/get-setting-by-key/{key}", response_model=APIResponse)
 def get_setting_by_key_and_category_from_db(category: str, key: str):
-    logger.info(f"GET /settings/{category}/get-setting-by-key/{key}")
     setting = get_setting_by_category_and_key_from_db(category, key)
     message = None
     if not setting:
@@ -42,6 +45,6 @@ def get_setting_by_key_and_category_from_db(category: str, key: str):
         "message": message,
         "data": setting
     }
-    logger.info(response)
+    logger.debug(response)
 
     return response
