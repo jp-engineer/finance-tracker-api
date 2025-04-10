@@ -3,20 +3,23 @@ from datetime import date
 import pytest
 
 from app.config import APP_CFG
-from tests.helpers import create_yaml_file
+from tests.helpers import create_yaml_file, load_test_data_file
 
 from app.core.helpers import (
     check_e2e_mode,
     read_yaml_file,
     read_json_file,
     write_yaml_file,
-    load_user_settings_dict
+    load_user_settings_dict,
+    check_settings_dict_for_missing_keys,
 )
+
 
 pytestmark = [
     pytest.mark.unit,
     pytest.mark.core
 ]
+
 
 def test_check_e2e_mode_in_prod():
     assert check_e2e_mode() is False
@@ -96,126 +99,140 @@ def test_write_yaml_file_invalid_path(tmp_path):
         write_yaml_file(str(yaml_file), yaml_content)
 
 
-# def test_load_user_settings_dict_merges_valid(monkeypatch, tmp_path):
-#     default_settings = {
-#         "general": {
-#             "default_currency": "USD",
-#             "default_currency_symbol": "$"
-#         },
-#         "developer": {
-#             "start_date": "2024-01-01"
-#         }
-#     }
+def test_load_user_settings_dict_merges_valid(monkeypatch, tmp_path):
+    default_settings = {
+        "general": {
+            "default_currency": "USD",
+            "default_currency_symbol": "$"
+        },
+        "developer": {
+            "start_date": "2024-01-01"
+        }
+    }
 
-#     user_settings = {
-#         "general": {
-#             "currency": "EUR"
-#         },
-#         "developer": {
-#             "start_date": None
-#         }
-#     }
+    user_settings = {
+        "general": {
+            "default_currency": "EUR"
+        }
+    }
 
-#     default_settings_path = tmp_path / "default_user_settings.yml"
-#     user_settings_path = tmp_path / "user_settings.yml"
+    default_settings_path = tmp_path / "default_user_settings.yml"
+    user_settings_path = tmp_path / "user_settings.yml"
     
-#     create_yaml_file(default_settings_path, default_settings)
-#     create_yaml_file(user_settings_path, user_settings)
+    create_yaml_file(default_settings_path, default_settings)
+    create_yaml_file(user_settings_path, user_settings)
 
-#     monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
+    monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
 
-#     merged = load_user_settings_dict()
+    merged = load_user_settings_dict()
 
-#     assert merged["general"]["currency"] == "EUR"
-#     assert merged["general"]["default_currency_symbol"] == "$"
-#     assert merged["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
-
-
-# def test_load_user_settings_dict_raises_on_invalid_category(monkeypatch, tmp_path):
-#     default_settings = {
-#         "general": {
-#             "currency": "USD"
-#         }
-#     }
-
-#     user_settings = {
-#         "invalid_category": {
-#             "currency": "EUR"
-#         }
-#     }
-
-#     default_settings_path = tmp_path / "default_user_settings.yml"
-#     user_settings_path = tmp_path / "user_settings.yml"
-    
-#     create_yaml_file(default_settings_path, default_settings)
-#     create_yaml_file(user_settings_path, user_settings)
-
-#     monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
-
-#     with pytest.raises(ValueError, match="Category invalid_category not found in default settings."):
-#         load_user_settings_dict()
+    assert merged["general"]["default_currency"] == "EUR"
+    assert merged["general"]["default_currency_symbol"] == "$"
 
 
-# def test_load_user_settings_dict_raises_on_invalid_key(monkeypatch, tmp_path):
-#     default_settings = {
-#         "general": {
-#             "currency": "USD"
-#         }
-#     }
+def test_load_user_settings_dict_raises_on_invalid_category(monkeypatch, tmp_path):
+    default_settings = {
+        "general": {
+            "default_currency": "USD",
+        }
+    }
 
-#     user_settings = {
-#         "general": {
-#             "invalid_key": "value"
-#         }
-#     }
+    user_settings = {
+        "invalid_category": {
+            "some_key": "value"
+        }
+    }
 
-#     default_settings_path = tmp_path / "default_user_settings.yml"
-#     user_settings_path = tmp_path / "user_settings.yml"
-    
-#     create_yaml_file(default_settings_path, default_settings)
-#     create_yaml_file(user_settings_path, user_settings)
+    default_settings_path = tmp_path / "default_user_settings.yml"
+    user_settings_path = tmp_path / "user_settings.yml"
 
-#     monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
+    create_yaml_file(default_settings_path, default_settings)
+    create_yaml_file(user_settings_path, user_settings)
 
-#     with pytest.raises(ValueError, match="Key invalid_key in general not found in default settings."):
-#         load_user_settings_dict()
+    monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
+
+    with pytest.raises(ValueError):
+        load_user_settings_dict()
 
 
-# def test_load_user_settings_dict_removes_none_values(monkeypatch, tmp_path):
-#     default_settings = {
-#         "general": {
-#             "currency": "USD",
-#             "timezone": "UTC"
-#         },
-#         "developer": {
-#             "start_date": "2024-01-01"
-#         }
-#     }
+def test_load_user_settings_dict_raises_on_invalid_key(monkeypatch, tmp_path):
+    default_settings = {
+        "general": {
+            "default_currency": "USD",
+        }
+    }
 
-#     user_settings = {
-#         "general": {
-#             "currency": None,
-#             "timezone": "Europe/Paris"
-#         },
-#         "developer": {
-#             "start_date": None
-#         }
-#     }
+    user_settings = {
+        "general": {
+            "invalid_key": "value"
+        }
+    }
 
-#     default_settings_path = tmp_path / "default_user_settings.yml"
-#     user_settings_path = tmp_path / "user_settings.yml"
-    
-#     create_yaml_file(default_settings_path, default_settings)
-#     create_yaml_file(user_settings_path, user_settings)
+    default_settings_path = tmp_path / "default_user_settings.yml"
+    user_settings_path = tmp_path / "user_settings.yml"
 
-#     monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
+    create_yaml_file(default_settings_path, default_settings)
+    create_yaml_file(user_settings_path, user_settings)
 
-#     result = load_user_settings_dict()
+    monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
 
-#     assert "currency" in result["general"]  # should fall back to default "USD"
-#     assert result["general"]["timezone"] == "Europe/Paris"
-#     assert result["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
+    with pytest.raises(ValueError):
+        load_user_settings_dict()
+
+
+def test_load_user_settings_dict_removes_none_values(monkeypatch, tmp_path):
+    default_settings = {
+        "developer": {
+            "start_date": "2024-01-01",
+            "some_other_setting": "default_value"
+        }
+    }
+
+    user_settings = {
+        "developer": {
+            "start_date": None,
+            "some_other_setting": None
+        }
+    }
+
+    default_settings_path = tmp_path / "default_user_settings.yml"
+    user_settings_path = tmp_path / "user_settings.yml"
+
+    create_yaml_file(default_settings_path, default_settings)
+    create_yaml_file(user_settings_path, user_settings)
+
+    monkeypatch.setitem(APP_CFG, "DEFAULT_SETTINGS_DIR", str(tmp_path))
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_path))
+
+    merged = load_user_settings_dict()
+
+    assert "some_other_setting" in merged["developer"]
+    assert merged["developer"]["some_other_setting"] == "default_value"
+    assert merged["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
+
+
+def test_check_settings_dict_for_missing_keys():
+    input_settings = load_test_data_file("user/test_valid_input_settings.yml")
+
+    result = check_settings_dict_for_missing_keys(input_settings)
+
+    assert result is True
+
+
+def test_check_settings_dict_for_missing_keys_raises_on_missing_key():
+    input_settings = load_test_data_file("user/test_valid_input_settings.yml")
+    input_settings["general"].pop("default_currency")
+
+    with pytest.raises(ValueError):
+        check_settings_dict_for_missing_keys(input_settings)
+
+
+def test_check_settings_dict_for_missing_keys_raises_on_missing_category():
+    input_settings = load_test_data_file("user/test_valid_input_settings.yml")
+    input_settings.pop("general")
+
+    with pytest.raises(ValueError):
+        check_settings_dict_for_missing_keys(input_settings)
