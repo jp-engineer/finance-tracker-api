@@ -1,0 +1,10 @@
+developer:
+  start_date: '2025-04-09'
+general:
+  country_code: DE
+  default_currency: EUR
+  default_currency_symbol: €
+view:
+  date_format: YYYY-MM-DD
+  user_name: Testuser
+  week_starts_on: Monday
