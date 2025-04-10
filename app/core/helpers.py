@@ -142,4 +142,6 @@ def check_settings_dict_for_missing_keys(input_settings_dict: dict) -> None:
             if category not in input_settings_dict:
                 raise ValueError(f"Missing category: {category} in settings dictionary.")
             if setting not in input_settings_dict[category]:
-                raise ValueError(f"Missing setting: {setting} in category: {category}.")        
+                raise ValueError(f"Missing setting: {setting} in category: {category}.")
+    
+    return True
