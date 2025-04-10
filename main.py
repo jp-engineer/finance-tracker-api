@@ -1,4 +1,3 @@
-# setup logging
 import os
 import logging
 from finance_tracker_shared.utils.setup_logging import setup_app_logging
@@ -15,17 +14,17 @@ from fastapi import FastAPI, APIRouter
 from app.config import APP_CFG
 from app.api.v1.GET import get_index as v1_get_index
 from app.api.v1.GET import get_settings as v1_get_settings
-from app.api.v1.GET import get_e2e_testing as v1_get_e2e_testing
 from app.api.v1.PUT import put_settings as v1_put_settings
 
+from app.api.v1.POST import post_e2e_testing as v1_post_e2e_testing
+from app.api.v1.GET import get_e2e_testing as v1_get_e2e_testing
+from app.api.v1.DELETE import delete_e2e_testing as v1_delete_e2e_testing
+
 from app.core.setup_user_settings import setup_user_settings_file
-from app.db.utils.delete_db import check_for_db_reset
 from app.db.utils.setup_db import setup_database
 
 setup_user_settings_file()
-check_for_db_reset()
 setup_database()
-
 
 app = FastAPI(
     title="Finance Tracker API",
@@ -38,14 +37,8 @@ api_v1.include_router(v1_get_index.router)
 api_v1.include_router(v1_get_settings.router)
 api_v1.include_router(v1_put_settings.router)
 api_v1.include_router(v1_get_e2e_testing.router)
-    # if APP_CFG.get("MODE") == "e2e_testing":
-    #     
-    #     from app.api.v1.routes.POST import post_e2e_testing as v1_post_e2e_testing
-    #     from app.api.v1.routes.DELETE import delete_e2e_testing as v1_delete_e2e_testing
-
-    #     
-    #     api_v1.include_router(v1_post_e2e_testing.router)
-    #     api_v1.include_router(v1_delete_e2e_testing.router)
+api_v1.include_router(v1_delete_e2e_testing.router)
+api_v1.include_router(v1_post_e2e_testing.router)
 
 logger.info(f"API {APP_CFG['API_VERSION']} initialized.")
 for route in api_v1.routes:
