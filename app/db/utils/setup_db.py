@@ -1,14 +1,17 @@
 import os
-from datetime import date, datetime
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
+from datetime import date, datetime
 import finance_tracker_shared.schemas as schemas
+
 from app.config import APP_CFG
 import app.db.models as models
 from app.db.database import get_engine
 from app.core.setup_user_settings import update_all_user_settings_in_file
-from app.core.helpers import read_json_file, load_user_settings_dict, SETTINGS_DICT
+from app.core.helpers import read_json_file, load_user_settings_dict
 from app.db.utils.delete_db import check_for_db_reset
+from app.core.helpers import SETTINGS_DICT
+
 
 import logging
 logger = logging.getLogger(__name__)
@@ -21,6 +24,7 @@ def check_settings_dict_for_missing_keys(input_settings_dict: dict) -> None:
             if setting not in input_settings_dict[category]:
                 raise ValueError(f"Missing setting: {setting} in category: {category}.")        
     
+
 def setup_database() -> None:
     check_for_db_reset()
     new_db = init_db()
@@ -37,6 +41,8 @@ def setup_database() -> None:
             settings_dict = load_user_settings_dict()
             seed_setting_tables(settings_dict)
             update_all_user_settings_in_file(settings_dict)
+    logger.info(f"Database initialized at {APP_CFG['DB_PATH']}")
+
 
 def init_db(engine: object=None) -> None:
     new_db = False
@@ -55,6 +61,7 @@ def init_db(engine: object=None) -> None:
         engine.dispose()
 
     return new_db
+
 
 def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
     if engine is None:
@@ -108,12 +115,14 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
         session.commit()
         engine.dispose()
 
+
 def re_init_db() -> None:
     if os.path.exists(APP_CFG['DB_PATH']):
         os.remove(APP_CFG['DB_PATH'])
         logger.info(f"Deleted database file: {APP_CFG['DB_PATH']}")
 
     init_db()
+
 
 def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
     def convert_date_strings_in_dict_to_date(data_dict: dict) -> dict:

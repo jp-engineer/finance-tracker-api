@@ -1,5 +1,7 @@
+# Setup logging before importing any other modules
 import os
 import logging
+
 from finance_tracker_shared.utils.setup_logging import setup_app_logging
 
 FILE_LOG_LVL = os.environ.get("FILE_LOG_LEVEL", "DEBUG").strip().upper()
@@ -11,17 +13,18 @@ setup_app_logging(
 logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI, APIRouter
-from app.config import APP_CFG
+
 from app.api.v1.GET import get_index as v1_get_index
 from app.api.v1.GET import get_settings as v1_get_settings
 from app.api.v1.PUT import put_settings as v1_put_settings
-
 from app.api.v1.POST import post_e2e_testing as v1_post_e2e_testing
 from app.api.v1.GET import get_e2e_testing as v1_get_e2e_testing
 from app.api.v1.DELETE import delete_e2e_testing as v1_delete_e2e_testing
 
 from app.core.setup_user_settings import setup_user_settings_file
 from app.db.utils.setup_db import setup_database
+from app.config import APP_CFG
+
 
 setup_user_settings_file()
 setup_database()
