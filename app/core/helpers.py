@@ -1,11 +1,14 @@
 import os
 import json
-import yaml
 from datetime import date
+
+import yaml
+
 from app.config import APP_CFG
 
 import logging
 logger = logging.getLogger(__name__)
+
 
 SETTINGS_DICT = {
     "general": [
@@ -23,11 +26,14 @@ SETTINGS_DICT = {
     ]
 }
 
+
 def check_e2e_mode() -> bool:
+    e2e = False
     if APP_CFG["MODE"] == "e2e_testing":
-        return True
-    else:
-        return False
+        e2e = True
+        
+    return e2e
+
 
 def read_yaml_file(file_path: str) -> dict:
     logger.debug(f"Reading YAML file: {file_path}")
@@ -37,7 +43,9 @@ def read_yaml_file(file_path: str) -> dict:
             data = yaml.safe_load(file)
     else:
         logger.warning(f"File not found: {file_path}. Returning empty dictionary.")
+
     return data
+
 
 def read_json_file(file_path: str) -> dict:
     logger.debug(f"Reading JSON file: {file_path}")
@@ -47,12 +55,21 @@ def read_json_file(file_path: str) -> dict:
             data = json.load(file)
     else:
         logger.warning(f"File not found: {file_path}. Returning empty dictionary.")
+
     return data
 
+
 def write_yaml_file(file_path: str, data: dict) -> None:
+    if not os.path.exists(os.path.dirname(file_path)):
+        raise FileNotFoundError(f"Directory does not exist: {os.path.dirname(file_path)}")
+    
+    if data is None or data == {}:
+        raise ValueError("Data to write cannot be None or empty dictionary.")
+
     logger.debug(f"Writing YAML file: {file_path} with data: {data}")
     with open(file_path, 'w', encoding='utf-8') as file:
         yaml.safe_dump(data, file, default_flow_style=False, allow_unicode=True)
+
 
 def load_user_settings_dict() -> dict:
     def deep_merge_dicts(defaults: dict, overrides: dict) -> dict:
@@ -62,42 +79,53 @@ def load_user_settings_dict() -> dict:
             if key in overrides:
                 if isinstance(value, dict) and isinstance(overrides[key], dict):
                     result[key] = deep_merge_dicts(value, overrides[key])
+
                 else:
                     result[key] = overrides[key]
+
             else:
                 result[key] = value
         logger.debug(f"Result of deep merge: {result}")
 
         return result
+    
+
+    def verify_user_settings_dict(user_data: dict) -> dict:
+        verified_user_data_dict = {}
+        for category, keys in user_data.items():
+            for key, value in keys.items():
+                if value is None and key != "start_date":
+                    logger.debug(f"Removed empty value for {category}.{key}")
+                    continue
+
+                if category not in verified_user_data_dict:
+                    verified_user_data_dict[category] = {}
+
+                if key == "start_date" and value is None:
+                    logger.debug(f"start_date is None, setting to today")
+                    verified_user_data_dict[category][key] = date.today().strftime("%Y-%m-%d")
+
+                else:
+                    verified_user_data_dict[category][key] = value
+
+        for category, subdict in verified_user_data_dict.items():
+            if category not in default_data_dict:
+                raise ValueError(f"Category {category} not found in default settings.")
+            
+            for key in subdict:
+                if key not in default_data_dict[category]:
+                    raise ValueError(f"Key {key} in {category} not found in default settings.")
+                
+        return verified_user_data_dict
+
 
     default_settings_file = os.path.join(APP_CFG['DEFAULT_SETTINGS_DIR'], "default_user_settings.yml")
     user_data_dict = read_yaml_file(APP_CFG["SETTINGS_FILE"])
     default_data_dict = read_yaml_file(default_settings_file)
 
-    cleaned_user_data_dict = {}
-    for category, keys in user_data_dict.items():
-        for key, value in keys.items():
-            if value is None and key != "start_date":
-                logger.debug(f"Removed empty value for {category}.{key}")
-                continue
+    verified_user_data_dict = verify_user_settings_dict(user_data_dict)
 
-            if category not in cleaned_user_data_dict:
-                cleaned_user_data_dict[category] = {}
-
-            if key == "start_date" and value is None:
-                logger.debug(f"start_date is None, setting to today")
-                cleaned_user_data_dict[category][key] = date.today().strftime("%Y-%m-%d")
-            else:
-                cleaned_user_data_dict[category][key] = value
-
-    for category, subdict in cleaned_user_data_dict.items():
-        if category not in default_data_dict:
-            raise ValueError(f"Category {category} not found in default settings.")
-        for key in subdict:
-            if key not in default_data_dict[category]:
-                raise ValueError(f"Key {key} in {category} not found in default settings.")
-
-    merged_data_dict = deep_merge_dicts(default_data_dict, cleaned_user_data_dict)
+    merged_data_dict = deep_merge_dicts(default_data_dict, verified_user_data_dict)
 
     if merged_data_dict.get('developer', {}).get('start_date') is None:
         merged_data_dict['developer']['start_date'] = date.today().strftime("%Y-%m-%d")
@@ -106,17 +134,3 @@ def load_user_settings_dict() -> dict:
     logger.debug(f"Merged settings: {merged_data_dict}")
 
     return merged_data_dict
-
-
-# def convert_dict_of_settings_by_category(settings_dict: dict) -> dict:
-#     logger.debug(f"Converting dictionary of settings by category: {settings_dict}")
-#     converted_dict = {}
-
-#     for category, settings_list in settings_dict.items():
-#         for setting in settings_list:
-#             if isinstance(setting, dict):
-#                 key = setting.get("key")
-#                 value = setting.get("value")
-#                 converted_dict[key] = value
-
-#     return converted_dict
