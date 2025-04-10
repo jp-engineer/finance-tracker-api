@@ -1,4 +1,3 @@
-import os
 import pytest
 import yaml
 from app.config import APP_CFG
