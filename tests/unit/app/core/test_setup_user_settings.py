@@ -13,14 +13,14 @@ pytestmark = [
     pytest.mark.core
 ]
 
-@pytest.mark.parametrize("category,key,value", [
+@pytest.mark.parametrize("category, key, value", [
     ("general", "default_currency", "eur"),
     ("general", "default_currency", "EUR")
 ])
 def test_validate_setting_valid(category, key, value):
     assert validate_setting(category, key, value) is True
 
-@pytest.mark.parametrize("category,key,value", [
+@pytest.mark.parametrize("category, key, value", [
     ("invalid_category", "key", "value"),
     ("general", "invalid_key", "value"),
     ("general", "default_currency", 123),
