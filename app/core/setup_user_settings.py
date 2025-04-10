@@ -85,3 +85,4 @@ def setup_user_settings_file() -> None:
 
     user_settings_dict = load_user_settings_dict()
     update_all_user_settings_in_file(user_settings_dict)
+    logger.info(f"User settings file {APP_CFG['SETTINGS_FILE']} set up successfully.")
