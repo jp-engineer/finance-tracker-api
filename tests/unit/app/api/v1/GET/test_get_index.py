@@ -2,6 +2,7 @@ import pytest
 
 pytestmark = [
     pytest.mark.api,
+    pytest.mark.api_GET,
     pytest.mark.api_index
 ]
 
