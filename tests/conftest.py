@@ -9,7 +9,6 @@ from app.config import APP_CFG
 from tests.helpers import reload_config_module
 
 
-
 @pytest.fixture()
 def api_version():
     return "v1"
@@ -41,5 +40,3 @@ def seeded_db(monkeypatch, tmp_path):
     setup_database()
 
     yield db_file
-
-
