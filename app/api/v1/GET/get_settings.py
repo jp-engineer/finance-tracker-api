@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from finance_tracker_shared.schemas import APIResponse
 
-from app.db.crud.read_from_db import get_all_settings_from_db_by_category, get_setting_by_category_and_key_from_db
+from app.db.crud.read_from_db import get_all_settings_from_db_by_category, get_setting_from_db_by_category_and_key
 
 import logging
 logger = logging.getLogger(__name__)
