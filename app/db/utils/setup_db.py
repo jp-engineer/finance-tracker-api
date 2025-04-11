@@ -13,7 +13,6 @@ from app.core.helpers import read_json_file, load_user_settings_dict, check_sett
 from app.core.setup_user_settings import update_all_user_settings_in_file
 from app.config import APP_CFG
 
-
 import logging
 logger = logging.getLogger(__name__)
     
