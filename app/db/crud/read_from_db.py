@@ -39,7 +39,7 @@ def get_all_settings_from_db_by_category() -> dict:
     
     return results_dict
 
-def get_setting_by_category_and_key_from_db(category: str, key: str) -> dict:
+def get_setting_from_db_by_category_and_key(category: str, key: str) -> dict:
     if category not in ["general", "developer", "view"]:
         raise ValueError("Invalid category. Must be one of: 'general', 'developer', 'view'.")
 
