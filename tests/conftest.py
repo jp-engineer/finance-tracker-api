@@ -3,7 +3,7 @@ import shutil
 
 import pytest
 
-from app.db.utils.setup_db import setup_database
+from app.db.utils.setup_db import setup_database, init_db
 from app.config import APP_CFG
 
 from tests.helpers import reload_config_module
@@ -14,9 +14,21 @@ from tests.helpers import reload_config_module
 def api_version():
     return "v1"
 
+
 @pytest.fixture()
 def api_prefix(api_version):
     return f"/api/{api_version}"
+
+
+@pytest.fixture()
+def empty_db(monkeypatch, tmp_path):
+    db_file = tmp_path / "test_finances.db"
+
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_file))
+    init_db()
+
+    yield db_file
+
 
 @pytest.fixture()
 def seeded_db(monkeypatch, tmp_path):
@@ -29,3 +41,5 @@ def seeded_db(monkeypatch, tmp_path):
     setup_database()
 
     yield db_file
+
+
