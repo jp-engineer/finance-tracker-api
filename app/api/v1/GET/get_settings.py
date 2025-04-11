@@ -31,7 +31,7 @@ def get_all_settings():
 
 @router.get("/{category}/get-setting-by-key/{key}", response_model=APIResponse)
 def get_setting_by_key_and_category_from_db(category: str, key: str):
-    setting = get_setting_by_category_and_key_from_db(category, key)
+    setting = get_setting_from_db_by_category_and_key(category, key)
     message = None
     if not setting:
         message = f"Setting with key '{key}' not found."
