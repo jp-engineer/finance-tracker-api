@@ -1,192 +1,168 @@
-# import os
-# import json
-# import yaml
-# import pytest
-# from datetime import date
-# from sqlalchemy import create_engine
-# from sqlalchemy.orm import Session
-# from app.config import APP_CFG
-# from app.db.models import Base
-# # from app.db.models import Setting
-# from app.db.database import get_engine
+import os
+import pytest
+from sqlalchemy.orm import Session
 
-# from app.db.utils.setup_db import (
-#     setup_database,
-#     init_db,
-#     seed_setting_tables,
-#     re_init_db,
-#     seed_db_with_data
-# )
+from app.db.models import SettingGeneral
+from app.core.helpers import read_yaml_file, read_json_file
+from app.db.database import get_engine
+from app.config import APP_CFG
 
-# pytestmark = [
-#     pytest.mark.unit,
-#     pytest.mark.db,
-#     pytest.mark.utils
-# ]
+from app.db.utils.setup_db import (
+    setup_database,
+    init_db,
+    seed_db_with_data,
+    seed_setting_tables,
+    re_init_db
+)
 
-# @pytest.fixture
-# def temp_user_settings_path(tmp_path):
-#     return str(tmp_path / "test_user_settings.yml")
 
-# def test_setup_database_seeds_db_when_seed_file_provided(tmp_path, monkeypatch):
-#     db_path = tmp_path / "seed_test.db"
-#     seed_file = tmp_path / "test_seed.json"
+pytestmark = [
+    pytest.mark.unit,
+    pytest.mark.db,
+    pytest.mark.utils
+    ]
+
+
+def test_setup_database(monkeypatch, tmp_path):
+    user_settings_file = os.path.join("tests", "unit", "app", "user", "test_user_settings.yml")
+    db_file = tmp_path / "test.db"
+
+    monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(user_settings_file))
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_file))
+
+    setup_database()
+
+    assert db_file.exists()
+
+
+def test_setup_database_raises_db_seed_file_not_found(monkeypatch, tmp_path):
+    non_existent_seed_file = "non_existent_seed.json"
+    db_file = tmp_path / "test.db"
+
+    monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", non_existent_seed_file)
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_file))
+
+    with pytest.raises(FileNotFoundError):
+        setup_database()
+
+
+def test_setup_database_seeds_db(monkeypatch, tmp_path):
+    db_file = tmp_path / "test.db"
+    test_seed_file = os.path.join("tests", "unit", "app", "db", "seed", "test_sample.json")
+
+    monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", test_seed_file)
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_file))
+
+    setup_database()
+
+    assert db_file.exists()
+
+    test_engine = get_engine()
+    with Session(test_engine) as session:
+        result = session.query(SettingGeneral).filter_by(key="default_currency").first()
     
-#     seed_file.write_text(json.dumps({
-#         "Setting": [{"key": "country_code", "value": "de", "category": "general"}]
-#     }))
+    assert result is not None
+
+
+def test_init_db(monkeypatch, tmp_path):
+    db_file = tmp_path / "test.db"
+
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_file))
+
+    init_db()
+
+    assert db_file.exists()
+
+
+def test_seed_db_with_data(monkeypatch, empty_db):
+    test_seed_file = os.path.join("tests", "unit", "app", "db", "seed", "test_sample.json")
+    seed_data = read_json_file(test_seed_file)
+
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(empty_db))
+
+    seed_db_with_data(seed_data)
+
+    test_engine = get_engine()
+    with Session(test_engine) as session:
+        result = session.query(SettingGeneral).filter_by(key="default_currency").first()
     
-#     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))
-#     monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", str(seed_file))
-
-#     setup_database()
-
-#     engine = get_engine()
-#     with Session(engine) as session:
-#         result = session.query(Setting).filter_by(key="country_code").first()
-#         assert result is not None
-#         assert result.value == "de"
-
-# def test_setup_database_seeded_db_has_correct_data(tmp_path, monkeypatch):
-#     db_path = tmp_path / "seeded.db"
-#     seed_file = tmp_path / "seed.json"
-#     seed_file.write_text(json.dumps({
-#         "Setting": [{"key": "country_code", "value": "de", "category": "general"}]
-#     }))
-
-#     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))
-#     monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", str(seed_file))
-
-#     setup_database()
-
-#     engine = get_engine()
-#     with Session(engine) as session:
-#         result = session.query(Setting).filter_by(key="country_code").first()
-#         assert result is not None
-#         assert result.value == "de"
+    assert result is not None
 
 
-# def test_setup_database_doesnt_seed_db_when_no_seed_file_provided(tmp_path, monkeypatch):
-#     db_path = tmp_path / "no_seed.db"
-#     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))
-#     monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", None)
+def test_seed_db_with_data_raises_developer_start_date_none(monkeypatch, empty_db):
+    test_seed_file = os.path.join("tests", "unit", "app", "db", "seed", "test_sample.json")
+    seed_data = read_json_file(test_seed_file)
+    seed_data["SettingDeveloper"][0]["value"] = None
 
-#     setup_database()
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(empty_db))
 
-#     engine = get_engine()
-#     with Session(engine) as session:
-#         rows = session.query(Setting).all()
-#         assert len(rows) > 0  # fallback settings should be inserted
+    with pytest.raises(ValueError):
+        seed_db_with_data(seed_data)
 
 
-# def test_setup_database_non_seeded_db_has_correct_data(tmp_path, monkeypatch):
-#     db_path = tmp_path / "fallback.db"
-#     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))
-#     monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", None)
+def test_seed_db_with_data_raises_model_name_not_in_models():
+    test_seed_file = os.path.join("tests", "unit", "app", "db", "seed", "test_sample.json")
+    seed_data = read_json_file(test_seed_file)
+    seed_data["NonExistentModel"] = seed_data.pop("SettingGeneral")
 
-#     setup_database()
+    with pytest.raises(ValueError):
+        seed_db_with_data(seed_data)
 
-#     engine = get_engine()
-#     with Session(engine) as session:
-#         setting = session.query(Setting).filter_by(key="default_currency").first()
-#         assert setting is not None
 
-# def test_init_db_creates_database(db_without_data):
-#     # Already initialized by fixture — just confirm DB path was created
-#     db_path = APP_CFG["DB_PATH"]
-#     assert os.path.exists(db_path)
+def test_seed_db_with_data_raises_invalid_value():
+    test_seed_file = os.path.join("tests", "unit", "app", "db", "seed", "test_sample.json")
+    seed_data = read_json_file(test_seed_file)
+    seed_data["SettingGeneral"][0]["value"] = None
 
-# def test_seed_db_with_data_inserts_data(db_without_data):
-#     seed_db_with_data({
-#         "Setting": [{"key": "key", "value": "value", "category": "general"}]
-#     }, db_without_data)
+    with pytest.raises(ValueError):
+        seed_db_with_data(seed_data)
 
-#     with Session(db_without_data) as session:
-#         rows = session.query(Setting).all()
-#         assert len(rows) == 1
-#         assert rows[0].key == "key"
-#         assert rows[0].value == "value"
-#         assert rows[0].category == "general"
 
-# def test_seed_db_with_data_raises_error_on_invalid_model(db_without_data):
-#     with pytest.raises(ValueError):
-#         seed_db_with_data({"InvalidModel": [{"key": "key", "value": "value", "category": "general"}]}, db_without_data)
+def test_seed_setting_tables(monkeypatch, empty_db):
+    user_settings_file = os.path.join("tests", "unit", "app", "user", "test_user_settings.yml")
+    settings_dict = read_yaml_file(user_settings_file)
 
-# def test_load_user_settings_dict_validates_user_settings(temp_user_settings_path, monkeypatch):
-#     settings_dict = {"developer": {"test_key": "test_value"}}
-#     with open(temp_user_settings_path, "w", encoding="utf-8") as f:
-#         yaml.dump(settings_dict, f)
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
+    monkeypatch.setitem(APP_CFG, "DB_PATH", str(empty_db))
 
-#     with pytest.raises(ValueError):
-#         load_user_settings_dict()
+    seed_setting_tables(settings_dict)
 
-# def test_load_user_settings_dict_overrides_default_settings(temp_user_settings_path, monkeypatch):
-#     settings_dict = {"view": {"default_currency": "USD"}}
-#     with open(temp_user_settings_path, "w", encoding="utf-8") as f:
-#         yaml.dump(settings_dict, f)
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
+    test_engine = get_engine()
+    with Session(test_engine) as session:
+        result = session.query(SettingGeneral).filter_by(key="default_currency").first()
+    
+    assert result is not None
 
-#     returned_dict = load_user_settings_dict()
 
-#     assert returned_dict["view"]["default_currency"] == "USD"
+def test_seed_setting_tables_raises_invalid_category():
+    user_settings_file = os.path.join("tests", "unit", "app", "user", "test_user_settings.yml")
+    settings_dict = read_yaml_file(user_settings_file)
+    settings_dict["invalid_category"] = settings_dict.pop("general")
 
-# def test_load_user_settings_dict_sets_empty_start_date_to_today(temp_user_settings_path, monkeypatch):
-#     settings_dict = {
-#         "developer": {"start_date": None},
-#         "view": {"default_currency": "USD"}
-#     }
-#     with open(temp_user_settings_path, "w", encoding="utf-8") as f:
-#         yaml.dump(settings_dict, f)
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
+    with pytest.raises(ValueError):
+        seed_setting_tables(settings_dict)
 
-#     result = load_user_settings_dict()
 
-#     assert result["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
+def test_seed_setting_tables_raises_invalid_value():
+    user_settings_file = os.path.join("tests", "unit", "app", "user", "test_user_settings.yml")
+    settings_dict = read_yaml_file(user_settings_file)
+    settings_dict["general"]["default_currency"] = None
 
-# def test_load_user_settings_dict_sets_empty_values_to_default(temp_user_settings_path, monkeypatch):
-#     settings_dict = {
-#         "developer": {"start_date": None},
-#         "general": {"currency": None}
-#     }
-#     with open(temp_user_settings_path, "w", encoding="utf-8") as f:
-#         yaml.dump(settings_dict, f)
-#     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(temp_user_settings_path))
+    with pytest.raises(ValueError):
+        seed_setting_tables(settings_dict)
 
-#     result = load_user_settings_dict()
 
-#     assert result["developer"]["start_date"] == date.today().strftime("%Y-%m-%d")
-#     assert result["view"]["default_currency"] == "gbp"
+def test_re_init_db(empty_db):
+    test_engine = get_engine()
+    with Session(test_engine) as session:
+        session.add_all([
+            SettingGeneral(key="default_currency", norm_key="Default currency", value="USD")
+        ])
+        session.commit()
+    test_engine.dispose()
 
-# def test_seed_settings_table_inserts_data(tmp_path):
-#     db_path = tmp_path / "seed_test.db"
-#     engine = create_engine(f"sqlite:///{db_path}")
-#     Base.metadata.create_all(bind=engine)
+    re_init_db()
 
-#     settings_dict = {
-#         "developer": {"start_date": date.today().strftime("%Y-%m-%d")},
-#         "general": {"currency": "EUR"}
-#     }
-
-#     seed_settings_table(settings_dict, engine)
-
-#     with Session(engine) as session:
-#         rows = session.query(Setting).all()
-#         assert len(rows) == 2
-#         keys = [(r.category, r.key) for r in rows]
-#         assert ("developer", "start_date") in keys
-#         assert ("general", "currency") in keys
-
-# def test_re_init_db_deletes_file(tmp_path, monkeypatch):
-#     db_path = tmp_path / "re_init_test.db"
-#     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_path))
-
-#     # Create the database file
-#     with open(db_path, 'w') as f:
-#         f.write('test')
-
-#     assert os.path.exists(db_path)
-
-#     re_init_db()
-
-#     assert os.path.exists(db_path)
+    with Session(test_engine) as session:
+        result = session.query(SettingGeneral).filter_by(key="default_currency").first()
+    
+    assert result is None
