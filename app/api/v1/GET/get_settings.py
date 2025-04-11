@@ -35,13 +35,10 @@ def get_setting_by_key_and_category_from_db(category: str, key: str):
     message = None
     if not setting:
         message = f"Setting with key '{key}' not found."
-        success = False
     else:
         message = f"Setting with key '{key}' retrieved successfully."
-        success = True
     
     response = {
-        "success": success,
         "message": message,
         "data": setting
     }
