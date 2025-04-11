@@ -1,0 +1,59 @@
+{
+    "AccountAll": [
+      {"id": 1, "reference": "Credit Card - Low Interest", "currency": "GBP", "starting_balance": -250.0, "active": true, "account_type": "credit"},
+      {"id": 2, "reference": "Credit Card - High Interest", "currency": "GBP", "starting_balance": -1500.0, "active": true, "account_type": "credit"},
+      {"id": 3, "reference": "Checking Account", "currency": "GBP", "starting_balance": 1500.0, "active": true, "account_type": "debit"},
+      {"id": 4, "reference": "Cash Wallet", "currency": "GBP", "starting_balance": 100.0, "active": true, "account_type": "independent"}
+    ],
+    "AccountCredit": [
+      {"id": 1, "account_id": 1, "credit_limit": 1000.0, "interest_rate": 9.9, "minimum_payment_pct": 3.0, "due_date": 15},
+      {"id": 2, "account_id": 2, "credit_limit": 2000.0, "interest_rate": 19.9, "minimum_payment_pct": 13.0, "due_date": 25}
+    ],
+    "AccountDebit": [
+      {"id": 1, "account_id": 2, "overdraft_limit": 500.0, "interest_rate": 15.5}
+    ],
+    "AccountIndependent": [
+      {"id": 1, "account_id": 3}
+    ],
+    "Folio": [
+      {"id": 1, "name": "WorkPlace Lmt", "category": "Income", "subcategory": "Main Job"},
+      {"id": 2, "name": "Electricity Provider", "category": "Bills & Utilities", "subcategory": "Electricity"},
+      {"id": 3, "name": "Internet Provider", "category": "Bills & Utilities", "subcategory": "Internet"},
+      {"id": 4, "name": "Amazon", "category": "Shopping", "subcategory": "Online Purchases"}
+    ],
+    "RecurringTransaction": [
+      {"id": 1, "transaction_type": "expense", "amount": 35.0, "description": "Monthly Internet", "variable": false, "estimate": null, "expires": false, "expires_after": null, "expires_on": null, "ignores_bank_holidays": true, "ignores_weekends": false, "pays_early": false, "freq_per_month": 1, "month_payment_dates": "15", "folio_id": 3, "from_account_id": 3},
+      {"id": 2, "transaction_type": "payment", "amount": 2500.0, "description": "Monthly Salary", "variable": false, "estimate": null, "expires": false, "freq_per_month": 1, "month_payment_dates": "28", "folio_id": 1, "to_account_id": 3}
+    ],
+    "ScheduledTransaction": [
+      {"id": 1, "transaction_type": "expense", "recurring_transaction_id": 1, "amount": 35.0, "description": "Monthly Internet - April", "scheduled_date": "2025-04-15", "pending": true, "folio_id": 3, "from_account_id": 3}
+    ],
+    "SettingGeneral": [
+      {"id": 1, "key": "country_code", "value": "DE"},
+      {"id": 2, "key": "default_currency", "value": "EUR"},
+      {"id": 3, "key": "default_currency_symbol", "value": "€"}
+    ],
+    "SettingDeveloper": [
+      {"id": 1, "key": "start_date", "value": "2025-04-09"}
+    ],
+    "SettingView": [
+      {"id": 1, "key": "user_name", "value": "TestUser"},
+      {"id": 2, "key": "week_starts_on", "value": "Monday"},
+      {"id": 3, "key": "date_format", "value": "YYYY-MM-DD"}
+    ],
+    "TransactionAll": [
+      {"id": 1, "amount": 59.99, "date": "2025-04-05", "description": "Amazon Order", "transaction_type": "expense", "paid": true, "recurring_transaction_id": null},
+      {"id": 2, "amount": 2500.0, "date": "2025-03-28", "description": "Salary March - 25", "transaction_type": "payment", "paid": true, "recurring_transaction_id": 2},
+      {"id": 3, "amount": 169.99, "date": "2025-04-05", "description": "Paying off credit card", "transaction_type": "transfer", "paid": true, "recurring_transaction_id": null}
+    ],
+    "TransactionExpense": [
+      {"id": 1, "transaction_id": 1, "from_account_id": 2, "folio_id": 4}
+    ],
+    "TransactionPayment": [
+      {"id": 1, "transaction_id": 2, "to_account_id": 3, "folio_id": 1}
+    ],
+    "TransactionTransfer": [
+      {"id": 1, "transaction_id": 3, "from_account_id": 3, "to_account_id": 2}
+    ]
+  }
+  
