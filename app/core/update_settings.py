@@ -24,8 +24,7 @@ def update_settings_in_db_from_dict(settings_dict: dict) -> None:
                     if existing:
                         existing.value = value
                     else:
-                        new_setting = SettingGeneral(key=key, value=value)
-                        session.add(new_setting)
+                        raise ValueError(f"Setting '{key}' not found in the database.")
 
             elif category == "developer":
                 for key, value in settings.items():
@@ -34,8 +33,7 @@ def update_settings_in_db_from_dict(settings_dict: dict) -> None:
                     if existing:
                         existing.value = value
                     else:
-                        new_setting = SettingDeveloper(key=key, value=value)
-                        session.add(new_setting)
+                        raise ValueError(f"Setting '{key}' not found in the database.")
 
             elif category == "view":
                 for key, value in settings.items():
@@ -44,8 +42,10 @@ def update_settings_in_db_from_dict(settings_dict: dict) -> None:
                     if existing:
                         existing.value = value
                     else:
-                        new_setting = SettingView(key=key, value=value)
-                        session.add(new_setting)
+                        raise ValueError(f"Setting '{key}' not found in the database.")
+            
+            else:
+                raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")
 
         session.commit()
         engine.dispose()
@@ -55,6 +55,9 @@ def update_settings_in_file_from_dict(settings_dict: dict) -> None:
     existing_settings = read_yaml_file(APP_CFG["SETTINGS_FILE"])
 
     for category, settings in settings_dict.items():
+        if category not in ["general", "developer", "view"]:
+            raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")
+        
         if category in existing_settings:
             existing_settings[category].update(settings)
         else:
@@ -116,7 +119,10 @@ def update_all_settings_from_dict(settings_dict: dict) -> None:
                     })
                     normalized_value = validated.value
                 except ValidationError as e:
-                    raise ValueError(f"Validation error: {e}")            
+                    raise ValueError(f"Validation error: {e}")
+
+        else:
+            raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")      
 
         input_dict[category][key] = normalized_value
     
