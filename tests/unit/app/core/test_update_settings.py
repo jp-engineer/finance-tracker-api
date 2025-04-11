@@ -77,18 +77,25 @@ def test_update_settings_in_file_from_dict(monkeypatch, tmp_path, empty_db):
     test_file_path = tmp_path / "test_settings.yml"
     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(test_file_path))
 
-    settings_dict = {
+    start_settings_dict = {
         "general": {
             "default_currency": "EUR"
         }
     }
+    create_yaml_file(test_file_path, start_settings_dict)
 
-    update_settings_in_file_from_dict(settings_dict)
+    update_settings_dict = {
+        "general": {
+            "default_currency": "USD"
+        }
+    }
+
+    update_settings_in_file_from_dict(update_settings_dict)
 
     with open(test_file_path, 'r') as file:
         content = file.read()
 
-    assert "default_currency: EUR" in content
+    assert "default_currency: USD" in content
                                            
 
 def test_update_settings_in_file_from_dict_raises_invalid_category(monkeypatch, tmp_path):
@@ -117,22 +124,31 @@ def test_update_all_settings_from_dict(monkeypatch, tmp_path, empty_db):
         ])
         session.commit()
 
-    settings_dict = {
-        "general": [
-            {
-                "key": "default_currency",
-                "value": "EUR"
-            }
-        ],
-        "developer": [
-            {
-                "key": "start_date",
-                "value": "2024-01-01"
-            }
-        ]
+    start_settings_dict = {
+        "general": {
+            "default_currency": "EUR"
+        },
+        "developer": {
+            "start_date": "2023-01-01"
+        }
     }
+    create_yaml_file(test_file_path, start_settings_dict)
+    settings_to_update = {
+        "general": [
+                {
+                    "key": "default_currency",
+                    "value": "EUR"
+                }
+            ],
+            "developer": [
+                {
+                    "key": "start_date",
+                    "value": "2024-01-01"
+                }
+            ]
+        }
 
-    update_all_settings_from_dict(settings_dict)
+    update_all_settings_from_dict(settings_to_update)
     updated_settings = read_yaml_file(APP_CFG["SETTINGS_FILE"])
     expected = {
         "general": {
@@ -140,8 +156,6 @@ def test_update_all_settings_from_dict(monkeypatch, tmp_path, empty_db):
         },
         "developer": {
             "start_date": "2024-01-01"
-        },
-        "view": {
         }
     }
 
@@ -158,8 +172,6 @@ def test_update_all_settings_from_dict(monkeypatch, tmp_path, empty_db):
         },
         "developer": {
             "start_date": updated_developer.value
-        },
-        "view": {
         }
     }
     
@@ -225,12 +237,19 @@ def test_update_setting_by_category_and_key(monkeypatch, tmp_path, empty_db):
         ])
         session.commit()
 
-    update_setting_by_category_and_key("general", "default_currency", "EUR")
+    start_settings_dict = {
+        "general": {
+            "default_currency": "EUR"
+        }
+    }
+    create_yaml_file(test_file_path, start_settings_dict)
+
+    update_setting_by_category_and_key("general", "default_currency", "GBP")
 
     updated_settings = read_yaml_file(APP_CFG["SETTINGS_FILE"])
     expected = {
         "general": {
-            "default_currency": "EUR"
+            "default_currency": "GBP"
         }
     }
 
@@ -240,7 +259,7 @@ def test_update_setting_by_category_and_key(monkeypatch, tmp_path, empty_db):
     with Session(engine) as session:
         updated_setting = session.query(SettingGeneral).filter_by(key="default_currency").first()
 
-    assert updated_setting.value == "EUR"
+    assert updated_setting.value == "GBP"
 
 
 def test_update_setting_by_category_and_key_raises_invalid_category(monkeypatch, tmp_path):
@@ -260,6 +279,13 @@ def test_update_setting_by_category_and_key_raises_invalid_category(monkeypatch,
 def test_update_setting_by_category_and_key_raises_invalid_key(monkeypatch, tmp_path):
     test_file_path = tmp_path / "test_settings.yml"
     monkeypatch.setitem(APP_CFG, "SETTINGS_FILE", str(test_file_path))
+
+    start_settings_dict = {
+        "general": {
+            "default_currency": "EUR"
+        }
+    }
+    create_yaml_file(test_file_path, start_settings_dict)
 
     with pytest.raises(ValueError):
         update_setting_by_category_and_key("general", "invalid_key", "HELLO")

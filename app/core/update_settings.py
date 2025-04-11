@@ -26,26 +26,26 @@ def update_settings_in_db_from_dict(settings_dict: dict) -> None:
                         else:
                             raise ValueError(f"Setting '{key}' not found in the database.")
 
-            elif category == "developer":
-                for key, value in settings.items():
-                        existing = session.query(SettingDeveloper).filter_by(key=key).first()
-                        if existing:
-                            existing.value = value
-                        else:
-                            raise ValueError(f"Setting '{key}' not found in the database.")
+                elif category == "developer":
+                    for key, value in settings.items():
+                            existing = session.query(SettingDeveloper).filter_by(key=key).first()
+                            if existing:
+                                existing.value = value
+                            else:
+                                raise ValueError(f"Setting '{key}' not found in the database.")
 
-            elif category == "view":
-                for key, value in settings.items():
+                elif category == "view":
+                    for key, value in settings.items():
 
-                    if settings:
-                        existing = session.query(SettingView).filter_by(key=key).first()
-                        if existing:
-                            existing.value = value
-                        else:
-                            raise ValueError(f"Setting '{key}' not found in the database.")
+                        if settings:
+                            existing = session.query(SettingView).filter_by(key=key).first()
+                            if existing:
+                                existing.value = value
+                            else:
+                                raise ValueError(f"Setting '{key}' not found in the database.")
             
-            else:
-                raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")
+                else:
+                    raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")
 
         session.commit()
         engine.dispose()
@@ -166,13 +166,6 @@ def update_all_settings_from_dict(settings_dict: dict) -> None:
     update_settings_in_file_from_dict(input_dict)
     update_settings_in_db_from_dict(input_dict)
 
-    result_dict = {
-        "success": True,
-        "message": "Settings updated successfully."
-    }
-
-    return result_dict
-
 
 def update_setting_by_category_and_key(category: str, key: str, value: str) -> None:
     input_dict = {
@@ -183,10 +176,3 @@ def update_setting_by_category_and_key(category: str, key: str, value: str) -> N
 
     update_settings_in_file_from_dict(input_dict)
     update_settings_in_db_from_dict(input_dict)
-
-    result_dict = {
-        "success": True,
-        "message": f"Setting '{key}' in category '{category}' updated successfully."
-    }
-    
-    return result_dict

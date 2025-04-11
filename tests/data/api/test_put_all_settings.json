@@ -2,11 +2,11 @@
   "general": [
     {
       "key": "country_code",
-      "value": "gb"
+      "value": "GB"
     },
     {
       "key": "default_currency",
-      "value": "gbp"
+      "value": "GBP"
     },
     {
       "key": "default_currency_symbol",
@@ -16,15 +16,15 @@
   "view": [
     {
       "key": "user_name",
-      "value": "pal"
+      "value": "Pal"
     },
     {
       "key": "week_starts_on",
-      "value": "monday"
+      "value": "Monday"
     },
     {
       "key": "date_format",
-      "value": "yyyy-mm-dd"
+      "value": "YYYY-MM-DD"
     }
   ],
   "developer": [

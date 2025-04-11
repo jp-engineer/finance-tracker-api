@@ -20,8 +20,8 @@ def test_put_all_settings(client, api_prefix):
     response = client.put(f"{api_prefix}/put-all-settings", json=all_settings_dict)
     response_dict = response.json()
     
-    assert response_dict["success"] == True
-    assert response_dict["message"] != None
+    assert response.status_code == 200
+    assert response_dict["data"] == True
 
 
 def test_put_general_setting(client, api_prefix):
@@ -32,8 +32,8 @@ def test_put_general_setting(client, api_prefix):
     response = client.put(f"{api_prefix}/general/put-setting", json=general_settings_dict)
     response_dict = response.json()
     
-    assert response_dict["success"] == True
-    assert response_dict["message"] != None
+    assert response.status_code == 200
+    assert response_dict["data"] != {}
 
 
 def test_put_developer_setting(client, api_prefix):
@@ -44,17 +44,17 @@ def test_put_developer_setting(client, api_prefix):
     response = client.put(f"{api_prefix}/developer/put-setting", json=developer_settings_dict)
     response_dict = response.json()
     
-    assert response_dict["success"] == True
-    assert response_dict["message"] != None
+    assert response.status_code == 200
+    assert response_dict["data"] != {}
 
 
-def test_put_view_setting(client, api_prefix):
-    view_settings_dict = {
+def test_put_viewer_setting(client, api_prefix):
+    viewer_settings_dict = {
         "key": "user_name",
-        "value": "TestyMcTestFace"
+        "value": "Testy Mc Test Face"
         }
-    response = client.put(f"{api_prefix}/view/put-setting", json=view_settings_dict)
+    response = client.put(f"{api_prefix}/view/put-setting", json=viewer_settings_dict)
     response_dict = response.json()
     
-    assert response_dict["success"] == True
-    assert response_dict["message"] != None
+    assert response.status_code == 200
+    assert response_dict["data"] != {}

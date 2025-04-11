@@ -14,16 +14,17 @@ router = APIRouter(prefix="/e2e-testing")
 
 @router.delete("/db/delete-test-db", response_model=APIResponse)
 def delete_test_db():
-    logger.info("POST /db/delete-test-db")
-
     if not check_e2e_mode():
         response = {
             "message": "e2e testing mode is not enabled",
+            "data": False
         }
     else:
         delete_db()
         response = {
             "message": "db deleted (if it existed)",
+            "data": True
         }
+    logger.debug(response)
 
     return response

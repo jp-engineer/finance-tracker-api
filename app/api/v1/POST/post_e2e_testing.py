@@ -16,11 +16,13 @@ def post_init_blank_test_db():
     if not check_e2e_mode():
         response = {
             "message": "e2e testing mode is not enabled",
+            "data": False
         }
     else:
         re_init_db()
         response = {
-            "message": "db initialized"
+            "message": "db initialized",
+            "data": True
         }
     logger.debug(response)
    
@@ -32,6 +34,7 @@ def post_seed_db_settings_data(data: dict):
     if not check_e2e_mode():
         response = {
             "message": "e2e testing mode is not enabled",
+            "data": False
         }
         return response
     else:
@@ -39,7 +42,8 @@ def post_seed_db_settings_data(data: dict):
         seed_setting_tables(data)
 
     response = {
-        "message": "settings data seeded"
+        "message": "settings data seeded",
+        "data": True
     }
     logger.debug(response)
     
@@ -51,6 +55,7 @@ def post_seed_test_data(data: dict):
     if not check_e2e_mode():
         response = {
             "message": "e2e testing mode is not enabled",
+            "data": False
         }
         return response
     else:
@@ -58,7 +63,8 @@ def post_seed_test_data(data: dict):
         seed_db_with_data(data)
 
     response = {
-        "message": "test data seeded"
+        "message": "test data seeded",
+        "data": True
     }
     logger.debug(response)
     

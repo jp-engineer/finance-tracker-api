@@ -18,12 +18,20 @@ router = APIRouter(prefix="/settings")
 @router.put("/put-all-settings", response_model=APIResponse)
 def put_all_settings(request: SettingAllUpdatePayload) -> APIResponse:
     settings_dict = request.model_dump()
-    result_dict = update_all_settings_from_dict(settings_dict)
 
-    if result_dict['success']:
-        logger.debug(f"Updated all settings successfully.")
-    else:
-        logger.error(f"Failed to update all settings: {result_dict['message']}")
+    result_dict = {
+        "message": "Settings updated successfully",
+        "data": True
+    }
+
+    try:
+        update_all_settings_from_dict(settings_dict)
+    except ValueError as e:
+        logger.error(f"Error updating settings: {e}")
+        result_dict = {
+            "message": str(e),
+            "data": False
+        }
 
     return result_dict
 
@@ -40,9 +48,23 @@ def put_general_setting(request: SettingGeneralUpdate, category="general") -> AP
     except ValidationError as e:
         raise ValueError(f"Validation error: {e}")
     
-    result_dict = update_setting_by_category_and_key(category, request.key, normalized_value)
+    result_dict = {
+        "message": "Setting updated successfully",
+        "data": {}
+    }
+    
+    try:
+        update_setting_by_category_and_key(category, request.key, normalized_value)
+        result_dict["data"] = {request.key: normalized_value}
+    except ValueError as e:
+        logger.error(f"Error updating setting: {e}")
+        result_dict = {
+            "message": str(e),
+            "data": {}
+        }
 
     return result_dict
+
 
 @router.put("/developer/put-setting", response_model=APIResponse)
 def put_developer_setting(request: SettingDeveloperUpdate, category="developer") -> APIResponse:
@@ -56,7 +78,20 @@ def put_developer_setting(request: SettingDeveloperUpdate, category="developer")
     except ValidationError as e:
         raise ValueError(f"Validation error: {e}")
 
-    result_dict = update_setting_by_category_and_key(category, request.key, normalized_value)
+    result_dict = {
+        "message": "Setting updated successfully",
+        "data": {}
+    }
+    
+    try:
+        update_setting_by_category_and_key(category, request.key, normalized_value)
+        result_dict["data"] = {request.key: normalized_value}
+    except ValueError as e:
+        logger.error(f"Error updating setting: {e}")
+        result_dict = {
+            "message": str(e),
+            "data": {}
+        }
 
     return result_dict
 
@@ -73,6 +108,19 @@ def put_view_setting(request: SettingViewUpdate, category="view") -> APIResponse
     except ValidationError as e:
         raise ValueError(f"Validation error: {e}")
 
-    result_dict = update_setting_by_category_and_key(category, request.key, normalized_value)
+    result_dict = {
+        "message": "Setting updated successfully",
+        "data": {}
+    }
+    
+    try:
+        update_setting_by_category_and_key(category, request.key, normalized_value)
+        result_dict["data"] = {request.key: normalized_value}
+    except ValueError as e:
+        logger.error(f"Error updating setting: {e}")
+        result_dict = {
+            "message": str(e),
+            "data": {}
+        }
 
     return result_dict

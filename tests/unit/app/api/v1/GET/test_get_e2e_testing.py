@@ -16,13 +16,13 @@ def test_get_e2e_mode_check(e2e_client, api_prefix):
     response = e2e_client.get(f"{api_prefix}/")
     response_dict = response.json()
     
-    assert response_dict["success"] == True
-    assert response_dict["data"] != None
+    assert response.status_code == 200
+    assert response_dict["data"] == True
 
 
-def test_get_e2e_mode_check_invalid(client, api_prefix):
+def test_get_e2e_mode_check_invalid_mode(client, api_prefix):
     response = client.get(f"{api_prefix}/")
     response_dict = response.json()
     
-    assert response_dict["success"] == True
+    assert response.status_code == 200
     assert response_dict["data"] == False
