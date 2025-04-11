@@ -234,6 +234,9 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
                     
                     except ValidationError as e:
                         raise ValueError(f"Error inserting {key} in category {category}: {e}")
+                    
+            else:
+                raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")
 
         session.commit()
         engine.dispose()
