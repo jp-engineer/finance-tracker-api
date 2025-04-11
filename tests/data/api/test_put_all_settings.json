@@ -1,0 +1,37 @@
+{
+  "general": [
+    {
+      "key": "country_code",
+      "value": "gb"
+    },
+    {
+      "key": "default_currency",
+      "value": "gbp"
+    },
+    {
+      "key": "default_currency_symbol",
+      "value": "£"
+    }
+  ],
+  "view": [
+    {
+      "key": "user_name",
+      "value": "pal"
+    },
+    {
+      "key": "week_starts_on",
+      "value": "monday"
+    },
+    {
+      "key": "date_format",
+      "value": "yyyy-mm-dd"
+    }
+  ],
+  "developer": [
+    {
+      "key": "start_date",
+      "value": "2025-04-06"
+    }
+  ]
+}
+  
