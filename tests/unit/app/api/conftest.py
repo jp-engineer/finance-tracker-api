@@ -24,9 +24,14 @@ def client(tmp_path, monkeypatch):
         yield c
 
 @pytest.fixture()
-def e2e_client():
-    os.environ["MODE"] = "e2e_testing"
-    reload_config_module()
+def e2e_client(monkeypatch):
+    test_seed_file = os.path.join("tests", "e2e", "db", "seed", "test_seed.json")
+
+    monkeypatch.setitem(APP_CFG, "MODE", "e2e_testing")
+    monkeypatch.setitem(APP_CFG, "DB_PATH", os.path.join("tests", "e2e", "db", "test-finances.db"))
+    monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", test_seed_file)
+
+    setup_database()
 
     with TestClient(app) as c:
         yield c
