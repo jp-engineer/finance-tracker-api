@@ -24,17 +24,16 @@ def create_yaml_file(path, content: dict):
         yaml.dump(content, f)
 
 
-def load_test_data_file(file_name: str) -> dict:
-    
-    file_path = os.path.join(TEST_DATA_DIR, file_name)
+def load_test_data_file(subfolder:str, filename:str, folder:str="unit") -> dict:
+    file_path = os.path.join(TEST_DATA_DIR, folder, subfolder, filename)
     if not os.path.exists(file_path):
         raise FileNotFoundError(f"Test data file not found: {file_path}")
 
     data_dict = {}
-    if file_name.endswith(".json"):
+    if filename.endswith(".json"):
         with open(file_path, "r", encoding="utf-8") as f:
             data_dict = json.load(f)
-    elif file_name.endswith(".yml") or file_name.endswith(".yaml"):
+    elif filename.endswith(".yml") or filename.endswith(".yaml"):
         with open(file_path, "r", encoding="utf-8") as f:
             data_dict = yaml.safe_load(f)
     else:

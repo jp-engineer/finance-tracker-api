@@ -31,7 +31,7 @@ def test_api_prefix(api_prefix):
 
 
 def test_api_routes(api_prefix):
-    loaded_routes = load_test_data_file("api/test_included_api_routes.json")
+    loaded_routes = load_test_data_file("api", "test_included_api_routes.json")
     valid_routes = {}
     for method, list_of_routes in loaded_routes.items():
         for route in list_of_routes:

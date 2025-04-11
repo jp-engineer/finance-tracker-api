@@ -16,7 +16,7 @@ def api_prefix(api_prefix):
 
 
 def test_put_all_settings(client, api_prefix):
-    all_settings_dict = load_test_data_file("api/test_put_all_settings.json")
+    all_settings_dict = load_test_data_file("api", "test_put_all_settings.json")
     response = client.put(f"{api_prefix}/put-all-settings", json=all_settings_dict)
     response_dict = response.json()
     

@@ -102,7 +102,7 @@ def test_db_path_in_e2e_testing(monkeypatch):
     monkeypatch.setenv("MODE", "e2e_testing")
     config = reload_config_module()
     
-    assert config.APP_CFG["DB_PATH"] == os.path.join("tests", "e2e", "db", "test-finances.db")
+    assert config.APP_CFG["DB_PATH"] == os.path.join("tests", "data", "e2e", "db", "test-finances.db")
 
 
 def test_db_seed_file_in_prod_when_provided(monkeypatch, tmp_path):

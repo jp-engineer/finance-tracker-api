@@ -215,7 +215,7 @@ def test_load_user_settings_dict_removes_none_values(monkeypatch, tmp_path):
 
 
 def test_check_settings_dict_for_missing_keys():
-    input_settings = load_test_data_file("user/test_valid_input_settings.yml")
+    input_settings = load_test_data_file("user", "test_valid_input_settings.yml")
 
     result = check_settings_dict_for_missing_keys(input_settings)
 
@@ -223,7 +223,7 @@ def test_check_settings_dict_for_missing_keys():
 
 
 def test_check_settings_dict_for_missing_keys_raises_on_missing_key():
-    input_settings = load_test_data_file("user/test_valid_input_settings.yml")
+    input_settings = load_test_data_file("user", "test_valid_input_settings.yml")
     input_settings["general"].pop("default_currency")
 
     with pytest.raises(ValueError):
@@ -231,7 +231,7 @@ def test_check_settings_dict_for_missing_keys_raises_on_missing_key():
 
 
 def test_check_settings_dict_for_missing_keys_raises_on_missing_category():
-    input_settings = load_test_data_file("user/test_valid_input_settings.yml")
+    input_settings = load_test_data_file("user", "test_valid_input_settings.yml")
     input_settings.pop("general")
 
     with pytest.raises(ValueError):

@@ -25,10 +25,10 @@ def client(tmp_path, monkeypatch):
 
 @pytest.fixture()
 def e2e_client(monkeypatch):
-    test_seed_file = os.path.join("tests", "e2e", "db", "seed", "test_seed.json")
+    test_seed_file = os.path.join("tests", "data", "e2e", "db", "seed", "test_seed.json")
 
     monkeypatch.setitem(APP_CFG, "MODE", "e2e_testing")
-    monkeypatch.setitem(APP_CFG, "DB_PATH", os.path.join("tests", "e2e", "db", "test-finances.db"))
+    monkeypatch.setitem(APP_CFG, "DB_PATH", os.path.join("tests", "data", "e2e", "db", "test-finances.db"))
     monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", test_seed_file)
     monkeypatch.setitem(APP_CFG, "DELETE_DB", "true")
 
