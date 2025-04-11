@@ -17,10 +17,9 @@ def update_settings_in_db_from_dict(settings_dict: dict) -> None:
 
     with Session(engine) as session:
         for category, settings in settings_dict.items():
-            if category == "general":
-                for key, value in settings.items():
-
-                    if settings:
+            if settings:
+                if category == "general":            
+                    for key, value in settings.items():
                         existing = session.query(SettingGeneral).filter_by(key=key).first()
                         if existing:
                             existing.value = value
@@ -29,8 +28,6 @@ def update_settings_in_db_from_dict(settings_dict: dict) -> None:
 
             elif category == "developer":
                 for key, value in settings.items():
-
-                    if settings:
                         existing = session.query(SettingDeveloper).filter_by(key=key).first()
                         if existing:
                             existing.value = value
@@ -60,31 +57,44 @@ def update_settings_in_file_from_dict(settings_dict: dict) -> None:
     for category, settings in settings_dict.items():
         if category not in ["general", "developer", "view"]:
             raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")
-        
-        if category in existing_settings:
+
+        for key, value in settings.items():
+            if key not in existing_settings[category]:
+                raise ValueError(f"Key '{key}' not found in the existing settings.")
+
             if category == "general":
                 try:
-                    validated = SettingGeneralUpdate.model_validate(settings)
-                    normalized_value = validated.value
+                    input_settings = {
+                        "key": key,
+                        "value": value
+                    }
+                    validated = SettingGeneralUpdate.model_validate(input_settings)
+                    value = validated.value
+
                 except ValidationError as e:
                     raise ValueError(f"Validation error: {e}")
             elif category == "developer":
                 try:
-                    validated = SettingDeveloperUpdate.model_validate(settings)
-                    normalized_value = validated.value
+                    input_settings = {
+                        "key": key,
+                        "value": value
+                    }
+                    validated = SettingDeveloperUpdate.model_validate(input_settings)
+                    value = validated.value
+
                 except ValidationError as e:
                     raise ValueError(f"Validation error: {e}")
             elif category == "view":
                 try:
-                    validated = SettingViewUpdate.model_validate(settings)
-                    normalized_value = validated.value
+                    input_settings = {
+                        "key": key,
+                        "value": value
+                    }
+                    validated = SettingViewUpdate.model_validate(input_settings)
                 except ValidationError as e:
                     raise ValueError(f"Validation error: {e}")
             
-            settings['value'] = normalized_value
             existing_settings[category].update(settings)
-        else:
-            existing_settings[category] = settings
     
     write_yaml_file(APP_CFG["SETTINGS_FILE"], existing_settings)
 
@@ -104,16 +114,16 @@ def update_all_settings_from_dict(settings_dict: dict) -> None:
 
     for category, settings_list in input_lists.items():
         for setting in settings_list:
-            result = {setting["key"]: setting["value"]}
+            result = {setting['key'] : setting['value']}
             input_dict[category].update(result)
 
     if input_dict["general"] == {} and input_dict["developer"] == {} and input_dict["view"] == {}:
         raise ValueError("No settings provided to update.")
 
-    for category, settings in input_dict.items():
-        if settings:
+    for category, settings_dict in input_dict.items():
+        if settings_dict:
             if category == "general":
-                for key, value in settings.items():
+                for key, value in settings_dict.items():
 
                     try:
                         validated = SettingGeneralUpdate.model_validate({
@@ -125,7 +135,7 @@ def update_all_settings_from_dict(settings_dict: dict) -> None:
                         raise ValueError(f"Validation error: {e}")
                     
             elif category == "developer":
-                for key, value in settings.items():
+                for key, value in settings_dict.items():
 
                     try:
                         validated = SettingDeveloperUpdate.model_validate({
@@ -137,7 +147,7 @@ def update_all_settings_from_dict(settings_dict: dict) -> None:
                         raise ValueError(f"Validation error: {e}")
                     
             elif category == "view":
-                for key, value in settings.items():
+                for key, value in settings_dict.items():
 
                     try:
                         validated = SettingViewUpdate.model_validate({
