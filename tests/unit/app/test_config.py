@@ -5,8 +5,8 @@ import pytest
 
 from tests.helpers import reload_config_module
 
-from app.config import APP_CFG
 from app.config import validate_file
+from app.config import APP_CFG
 
 
 def test_validate_file_with_valid_json_file_provided(tmp_path):
@@ -105,7 +105,7 @@ def test_db_path_in_e2e_testing(monkeypatch):
     assert config.APP_CFG["DB_PATH"] == os.path.join("tests", "data", "e2e", "db", "test-finances.db")
 
 
-def test_db_seed_file_in_prod_when_provided(monkeypatch, tmp_path):
+def test_db_seed_file_in_prod_set_when_provided(monkeypatch, tmp_path):
     seed_dir = tmp_path / "app" / "db" / "seed"
     seed_dir.mkdir(parents=True)
     seed_file = seed_dir / "custom_seed.json"
@@ -120,7 +120,7 @@ def test_db_seed_file_in_prod_when_provided(monkeypatch, tmp_path):
     assert os.path.exists(config.APP_CFG["DB_SEED_FILE"])
 
 
-def test_db_seed_file_in_prod_when_not_provided(monkeypatch, tmp_path):
+def test_db_seed_file_in_prod_not_set_when_not_provided(monkeypatch, tmp_path):
     monkeypatch.delenv("DB_SEED_FILE", raising=False)
     monkeypatch.setenv("MODE", "prod")
 
@@ -134,7 +134,7 @@ def test_db_seed_file_in_prod_when_not_provided(monkeypatch, tmp_path):
     assert config.APP_CFG["DB_SEED_FILE"] is None
 
 
-def test_db_seed_file_in_dev_when_provided(monkeypatch, tmp_path):
+def test_db_seed_file_in_dev_set_when_provided(monkeypatch, tmp_path):
     monkeypatch.setenv("MODE", "dev")
 
     seed_dir = tmp_path / "app" / "db" / "seed"
@@ -167,7 +167,7 @@ def test_db_seed_file_in_dev_when_not_provided_loads_dev_seed_if_exists(monkeypa
     assert os.path.exists(config.APP_CFG["DB_SEED_FILE"])
 
 
-def test_db_seed_file_in_e2e_when_provided(monkeypatch, tmp_path):
+def test_db_seed_file_in_e2e_set_when_provided(monkeypatch, tmp_path):
     monkeypatch.setenv("MODE", "e2e_testing")
 
     seed_dir = tmp_path / "tests" / "e2e" / "app" / "db" / "seed"
@@ -192,7 +192,7 @@ def test_db_seed_file_in_e2e_when_not_provided_loads_test_seed(monkeypatch):
     assert os.path.exists(config.APP_CFG["DB_SEED_FILE"])
 
 
-def test_settings_file_in_prod_when_provided(monkeypatch, tmp_path):
+def test_settings_file_in_prod_set_when_provided(monkeypatch, tmp_path):
     settings_dir = tmp_path / "app" / "user"
     settings_dir.mkdir(parents=True)
     settings_file = settings_dir / "custom.yml"
@@ -207,7 +207,7 @@ def test_settings_file_in_prod_when_provided(monkeypatch, tmp_path):
     assert os.path.exists(config.APP_CFG["SETTINGS_FILE"])
 
 
-def test_settings_file_in_prod_when_not_provided(monkeypatch, tmp_path):
+def test_settings_file_in_prod_set_when_not_provided(monkeypatch, tmp_path):
     monkeypatch.delenv("SETTINGS_FILE", raising=False)
     monkeypatch.setenv("MODE", "prod")
 
@@ -217,7 +217,7 @@ def test_settings_file_in_prod_when_not_provided(monkeypatch, tmp_path):
     assert config.APP_CFG["SETTINGS_FILE"] == os.path.join("app", "user", "user_settings.yml")
 
 
-def test_settings_file_in_dev_when_provided(monkeypatch, tmp_path):
+def test_settings_file_in_dev_set_when_provided(monkeypatch, tmp_path):
     monkeypatch.setenv("MODE", "dev")
 
     settings_dir = tmp_path / "app" / "user"
@@ -234,7 +234,7 @@ def test_settings_file_in_dev_when_provided(monkeypatch, tmp_path):
     assert os.path.exists(config.APP_CFG["SETTINGS_FILE"])
 
 
-def test_settings_file_in_dev_when_not_provided(monkeypatch, tmp_path):
+def test_settings_file_in_dev_set_when_not_provided(monkeypatch, tmp_path):
     monkeypatch.setenv("MODE", "dev")
 
     user_dir = tmp_path / "app" / "user"
