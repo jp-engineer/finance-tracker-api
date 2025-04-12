@@ -23,6 +23,7 @@ def setup_user_settings_file() -> None:
         if not os.path.exists(user_setting_path):
             if not os.path.exists(template_settings_path):
                 logger.error(f"Template file {template_settings_path} does not exist.")
+
                 raise FileNotFoundError(f"Template file {template_settings_path} does not exist.")
             
             logger.info(f"user_settings.yml does not exist. Copying template settings from {template_settings_path} to {user_setting_path}")
@@ -46,6 +47,7 @@ def update_all_user_settings_in_file(settings: dict = None) -> dict:
                 logger.debug(f"Setting default value for {category}.{key} to {value}")
             
             if not validate_setting(category, key, value):
+
                 raise ValueError(f"Invalid setting: {category}.{key} = {value}")
     
     logger.debug(f"Updating settings file: {APP_CFG["SETTINGS_FILE"]} with settings: {settings}")
@@ -55,6 +57,7 @@ def update_all_user_settings_in_file(settings: dict = None) -> dict:
 
 def validate_setting(category: str, key: str, value: str) -> bool:
     if category not in SETTINGS_CATEGORIES:
+
         raise ValueError(f"Invalid category: {category}")
     
     if category == "general":
@@ -65,6 +68,7 @@ def validate_setting(category: str, key: str, value: str) -> bool:
             )
             return True
         except (ValidationError, ValueError) as e:
+
             raise ValueError(f"Invalid setting [{category}.{key}] = {value}: {e}")
     
     elif category == "developer":
@@ -75,6 +79,7 @@ def validate_setting(category: str, key: str, value: str) -> bool:
             )
             return True
         except (ValidationError, ValueError) as e:
+
             raise ValueError(f"Invalid setting [{category}.{key}] = {value}: {e}")
     
     elif category == "view":
@@ -85,4 +90,5 @@ def validate_setting(category: str, key: str, value: str) -> bool:
             )
             return True
         except (ValidationError, ValueError) as e:
+            
             raise ValueError(f"Invalid setting [{category}.{key}] = {value}: {e}")

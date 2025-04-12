@@ -61,9 +61,11 @@ def read_json_file(file_path: str) -> dict:
 
 def write_yaml_file(file_path: str, data: dict) -> None:
     if not os.path.exists(os.path.dirname(file_path)):
+
         raise FileNotFoundError(f"Directory does not exist: {os.path.dirname(file_path)}")
     
     if data is None or data == {}:
+
         raise ValueError("Data to write cannot be None or empty dictionary.")
 
     logger.debug(f"Writing YAML file: {file_path} with data: {data}")
@@ -110,18 +112,20 @@ def load_user_settings_dict() -> dict:
 
         for category, subdict in verified_user_data_dict.items():
             if category not in default_data_dict:
+
                 raise ValueError(f"Category {category} not found in default settings.")
             
             for key in subdict:
                 if key not in default_data_dict[category]:
+                    
                     raise ValueError(f"Key {key} in {category} not found in default settings.")
                 
         return verified_user_data_dict
 
 
     default_settings_file = os.path.join(APP_CFG['DEFAULT_SETTINGS_DIR'], "default_user_settings.yml")
-    user_data_dict = read_yaml_file(APP_CFG["SETTINGS_FILE"])
     default_data_dict = read_yaml_file(default_settings_file)
+    user_data_dict = read_yaml_file(APP_CFG["SETTINGS_FILE"])
 
     verified_user_data_dict = verify_user_settings_dict(user_data_dict)
 

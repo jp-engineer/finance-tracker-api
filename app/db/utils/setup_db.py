@@ -24,6 +24,7 @@ def setup_database() -> None:
     if new_db:
         if APP_CFG["DB_SEED_FILE"]:
             if not os.path.exists(APP_CFG["DB_SEED_FILE"]):
+
                 raise FileNotFoundError(f"Seed file not found: {APP_CFG['DB_SEED_FILE']}")
             
             logger.debug(f"Seeding database with file: {APP_CFG['DB_SEED_FILE']}")
@@ -105,6 +106,7 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
                 valid = True
                 break
     if not valid:
+
         raise ValueError("start_date is None in SettingDeveloper. Please provide a valid date.")
 
     settings_file_dict = {"general": {}, "developer": {}, "view": {}}
@@ -113,6 +115,7 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
             model_class = getattr(models, model_name, None)
 
             if model_class is None:
+
                 raise ValueError(f"Model {model_name} not found in app.db.models")
 
             for item in model_data:
@@ -163,6 +166,7 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
                         validated = schemas.TransactionTransferCreate(**item)
 
                 except ValidationError as e:
+
                     raise ValueError(f"Error validating {model_name} with data {item}: {e}")
 
                 try:
@@ -172,6 +176,7 @@ def seed_db_with_data(data_dict: dict, engine: object=None) -> None:
                         session.add(db_model)
 
                 except Exception as e:
+
                     raise ValueError(f"Error inserting {model_name} with data {validated}: {e}")
 
         session.commit()
@@ -201,6 +206,7 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
                             logger.debug(f"Inserted: {key} with value: {value} in category: {category}")
                     
                     except ValidationError as e:
+
                         raise ValueError(f"Error inserting {key} in category {category}: {e}")
             
             elif category == "developer":
@@ -219,6 +225,7 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
                             logger.debug(f"Inserted: {key} with value: {value} in category: {category}")
                    
                     except ValidationError as e:
+
                         raise ValueError(f"Error inserting {key} in category {category}: {e}")
  
             elif category == "view":
@@ -233,9 +240,11 @@ def seed_setting_tables(settings_dict: dict, engine: object=None) -> None:
                             logger.debug(f"Inserted: {key} with value: {value} in category: {category}")
                     
                     except ValidationError as e:
+
                         raise ValueError(f"Error inserting {key} in category {category}: {e}")
                     
             else:
+                
                 raise ValueError(f"Invalid category '{category}'. Valid categories are 'general', 'developer', and 'view'.")
 
         session.commit()

@@ -60,6 +60,7 @@ def get_setting_from_db_by_category_and_key(category: str, key: str) -> dict:
                 setting_dict = SettingViewRead.model_validate(query_result).model_dump()
         
         except Exception as e:
+            
             raise ValueError(f"Error retrieving setting: {e}")
         
         logging.debug(f"Retrieved setting: {setting_dict}")

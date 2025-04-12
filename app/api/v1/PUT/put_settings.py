@@ -38,6 +38,7 @@ def put_general_setting(request: SettingGeneralUpdate, category="general") -> AP
         normalized_value = validated.value
 
     except ValidationError as e:
+
         raise ValueError(f"Validation error: {e}")
     
     result_dict = {
@@ -64,6 +65,7 @@ def put_developer_setting(request: SettingDeveloperUpdate, category="developer")
         normalized_value = validated.value
 
     except ValidationError as e:
+
         raise ValueError(f"Validation error: {e}")
 
     result_dict = {
@@ -90,6 +92,7 @@ def put_view_setting(request: SettingViewUpdate, category="view") -> APIResponse
         normalized_value = validated.value
 
     except ValidationError as e:
+        
         raise ValueError(f"Validation error: {e}")
 
     result_dict = {
