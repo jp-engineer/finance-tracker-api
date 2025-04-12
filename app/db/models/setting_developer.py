@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from app.db.models import Base
 
+
 class SettingDeveloper(Base):
     __tablename__ = "settings_developer"
 
@@ -8,4 +9,3 @@ class SettingDeveloper(Base):
     key = Column(String, nullable=False, unique=True)
     norm_key = Column(String, nullable=False, unique=True)
     value = Column(String, nullable=False)
-    

@@ -1,7 +1,10 @@
 from sqlalchemy import Column, Integer, String, Enum
 from sqlalchemy.orm import relationship
-from app.db.models.base_class import Base
+
 from finance_tracker_shared.schemas.enums import FolioCategoryEnum
+
+from app.db.models.base_class import Base
+
 
 class Folio(Base):
     __tablename__ = "folios"

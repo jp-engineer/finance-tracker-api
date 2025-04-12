@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from app.db.models import Base
 
+
 class SettingView(Base):
     __tablename__ = "settings_view"
 

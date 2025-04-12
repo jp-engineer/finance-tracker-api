@@ -1,13 +1,16 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, Enum
 from sqlalchemy.orm import relationship
-from app.db.models.base_class import Base
+
 from finance_tracker_shared.schemas.enums import AccountTypeEnum
+
+from app.db.models.base_class import Base
 from app.db.models.account_credit import AccountCredit
 from app.db.models.account_debit import AccountDebit
 from app.db.models.account_independent import AccountIndependent
-from app.db.models.transaction_transfer import TransactionTransfer
-from app.db.models.transaction_payment import TransactionPayment
 from app.db.models.transaction_expense import TransactionExpense
+from app.db.models.transaction_payment import TransactionPayment
+from app.db.models.transaction_transfer import TransactionTransfer
+
 
 class AccountAll(Base):
     __tablename__ = "accounts_all"

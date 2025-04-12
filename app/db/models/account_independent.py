@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+
 from app.db.models.base_class import Base
+
 
 class AccountIndependent(Base):
     __tablename__ = "accounts_independent"

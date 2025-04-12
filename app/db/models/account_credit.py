@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, Float, ForeignKey
 from sqlalchemy.orm import relationship
+
 from app.db.models.base_class import Base
+
 
 class AccountCredit(Base):
     __tablename__ = "accounts_credit"

@@ -1,6 +1,8 @@
 from sqlalchemy import Column, Integer, ForeignKey
 from sqlalchemy.orm import relationship
+
 from app.db.models.base_class import Base
+
 
 class TransactionExpense(Base):
     __tablename__ = "transactions_expense"

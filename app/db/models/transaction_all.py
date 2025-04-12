@@ -1,7 +1,10 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, Date, ForeignKey, Enum
 from sqlalchemy.orm import relationship
-from app.db.models.base_class import Base
+
 from finance_tracker_shared.schemas.enums import TransactionTypeEnum
+
+from app.db.models.base_class import Base
+
 
 class TransactionAll(Base):
     __tablename__ = "transactions_all"

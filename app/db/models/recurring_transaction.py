@@ -1,7 +1,10 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, Date, Enum, ForeignKey
 from sqlalchemy.orm import relationship
-from app.db.models.base_class import Base
+
 from finance_tracker_shared.schemas.enums import TransactionTypeEnum
+
+from app.db.models.base_class import Base
+
 
 class RecurringTransaction(Base):
     __tablename__ = "recurring_transactions"
