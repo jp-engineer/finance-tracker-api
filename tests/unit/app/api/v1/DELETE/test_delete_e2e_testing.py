@@ -20,6 +20,7 @@ def test_delete_test_db(e2e_client, api_prefix):
     assert response.status_code == 200
     assert response_dict["data"] == True
 
+
 def test_delete_test_db_invalid_mode(client, api_prefix):
     response = client.delete(f"{api_prefix}/db/delete-test-db")
     response_dict = response.json()
