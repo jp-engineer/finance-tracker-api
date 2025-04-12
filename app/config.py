@@ -43,8 +43,6 @@ def validate_file(filename: str, filetype: str) -> Optional[str]:
         logger.error(f"File {filename} does not exist.")
         return None
 
-    logger.info(f"File {filename} exists.")
-
     return filename
 
 
