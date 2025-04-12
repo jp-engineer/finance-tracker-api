@@ -23,15 +23,7 @@ def put_all_settings(request: SettingAllUpdatePayload) -> APIResponse:
         "message": "Settings updated successfully",
         "data": True
     }
-
-    try:
-        update_all_settings_from_dict(settings_dict)
-    except ValueError as e:
-        logger.error(f"Error updating settings: {e}")
-        result_dict = {
-            "message": str(e),
-            "data": False
-        }
+    logger.debug(f"Received settings_dict: {settings_dict}")
 
     return result_dict
 
@@ -52,16 +44,12 @@ def put_general_setting(request: SettingGeneralUpdate, category="general") -> AP
         "message": "Setting updated successfully",
         "data": {}
     }
+
+    update_setting_by_category_and_key(category, request.key, normalized_value)
+    result_dict["data"] = {request.key: normalized_value}
+
+    logger.debug(f"Updated setting: {request.key} with value: {normalized_value}")
     
-    try:
-        update_setting_by_category_and_key(category, request.key, normalized_value)
-        result_dict["data"] = {request.key: normalized_value}
-    except ValueError as e:
-        logger.error(f"Error updating setting: {e}")
-        result_dict = {
-            "message": str(e),
-            "data": {}
-        }
 
     return result_dict
 
@@ -83,15 +71,11 @@ def put_developer_setting(request: SettingDeveloperUpdate, category="developer")
         "data": {}
     }
     
-    try:
-        update_setting_by_category_and_key(category, request.key, normalized_value)
-        result_dict["data"] = {request.key: normalized_value}
-    except ValueError as e:
-        logger.error(f"Error updating setting: {e}")
-        result_dict = {
-            "message": str(e),
-            "data": {}
-        }
+    update_setting_by_category_and_key(category, request.key, normalized_value)
+    result_dict["data"] = {request.key: normalized_value}
+
+    logger.debug(f"Updated setting: {request.key} with value: {normalized_value}")
+
 
     return result_dict
 
@@ -113,14 +97,10 @@ def put_view_setting(request: SettingViewUpdate, category="view") -> APIResponse
         "data": {}
     }
     
-    try:
-        update_setting_by_category_and_key(category, request.key, normalized_value)
-        result_dict["data"] = {request.key: normalized_value}
-    except ValueError as e:
-        logger.error(f"Error updating setting: {e}")
-        result_dict = {
-            "message": str(e),
-            "data": {}
-        }
+    update_setting_by_category_and_key(category, request.key, normalized_value)
+    result_dict["data"] = {request.key: normalized_value}
+    
+    logger.debug(f"Updated setting: {request.key} with value: {normalized_value}")
+
 
     return result_dict
