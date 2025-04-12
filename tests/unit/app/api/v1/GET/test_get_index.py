@@ -1,10 +1,12 @@
 import pytest
 
+
 pytestmark = [
     pytest.mark.api,
     pytest.mark.api_GET,
     pytest.mark.api_index
 ]
+
 
 def test_get_index_init_message(client, api_prefix):
     response = client.get(f"{api_prefix}/")

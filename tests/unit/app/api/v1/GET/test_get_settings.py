@@ -1,5 +1,6 @@
 import pytest
 
+
 pytestmark = [
     pytest.mark.api,
     pytest.mark.api_GET,

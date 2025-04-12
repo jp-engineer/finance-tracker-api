@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from app.db.utils.setup_db import setup_database, init_db
@@ -27,7 +29,7 @@ def empty_db(monkeypatch, tmp_path):
 @pytest.fixture()
 def seeded_db(monkeypatch, tmp_path):
     db_file = tmp_path / "test_finances.db"
-    test_seed_loc = "tests/unit/app/db/seed/test_sample.json"
+    test_seed_loc = os.path.join("tests", "unit", "app", "db", "seed", "test_sample.json")
 
     monkeypatch.setitem(APP_CFG, "DB_PATH", str(db_file))
     monkeypatch.setitem(APP_CFG, "DB_SEED_FILE", test_seed_loc)

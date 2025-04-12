@@ -1,14 +1,12 @@
 import os
+
 import pytest
 from fastapi.testclient import TestClient
-from main import app
-from app.db.utils.setup_db import setup_database, init_db
-from app.config import APP_CFG
-from tests.helpers import reload_config_module
 
-# from app.config import APP_CFG
-# from app.db.utils.setup_db import setup_database
-# from tests.helpers import reload_main_module
+from app.db.utils.setup_db import setup_database, init_db
+from main import app
+from app.config import APP_CFG
+
 
 @pytest.fixture()
 def client(tmp_path, monkeypatch):
@@ -23,6 +21,7 @@ def client(tmp_path, monkeypatch):
     with TestClient(app) as c:
         yield c
 
+
 @pytest.fixture()
 def e2e_client(monkeypatch):
     test_seed_file = os.path.join("tests", "data", "e2e", "db", "seed", "test_seed.json")
@@ -36,6 +35,7 @@ def e2e_client(monkeypatch):
 
     with TestClient(app) as c:
         yield c
+
 
 @pytest.fixture()
 def e2e_client_w_empty_db(tmp_path, monkeypatch):
